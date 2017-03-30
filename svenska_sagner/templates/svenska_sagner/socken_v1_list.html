@@ -1,0 +1,20 @@
+{% extends "svenska_sagner/socken_v1_base.html" %}
+
+{% block title %}
+    SockenV1s
+{% endblock %}
+
+{% block content %}
+    <h1>SockenV1s</h1>
+    <h2><a href={% url "socken_v1_create" %}>Create new SockenV1</a></h2>
+    <ul>
+    {% for socken_v1 in socken_v1_list %}
+        <li><a href={% url "socken_v1_detail" socken_v1.pk %}>{{ socken_v1 }}</a> | <a href={% url "socken_v1_update" socken_v1.pk %}>Update</a> | <form style="display:inline;" action={% url "socken_v1_delete" socken_v1.pk %} method="post" onsubmit="return confirm('Are you sure you want to delete {{ socken_v1 }}?')">{% csrf_token %}
+    <input type="submit" value="Delete" />
+    </form></li>
+    {% empty %}
+        <li>No SockenV1s yet.</li>
+    {% endfor %}
+    </ul>
+{% endblock %}
+

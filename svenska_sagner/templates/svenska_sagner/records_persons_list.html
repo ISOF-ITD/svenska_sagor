@@ -1,0 +1,20 @@
+{% extends "svenska_sagner/records_persons_base.html" %}
+
+{% block title %}
+    RecordsPersonss
+{% endblock %}
+
+{% block content %}
+    <h1>RecordsPersonss</h1>
+    <h2><a href={% url "records_persons_create" %}>Create new RecordsPersons</a></h2>
+    <ul>
+    {% for records_persons in records_persons_list %}
+        <li><a href={% url "records_persons_detail" records_persons.pk %}>{{ records_persons }}</a> | <a href={% url "records_persons_update" records_persons.pk %}>Update</a> | <form style="display:inline;" action={% url "records_persons_delete" records_persons.pk %} method="post" onsubmit="return confirm('Are you sure you want to delete {{ records_persons }}?')">{% csrf_token %}
+    <input type="submit" value="Delete" />
+    </form></li>
+    {% empty %}
+        <li>No RecordsPersonss yet.</li>
+    {% endfor %}
+    </ul>
+{% endblock %}
+

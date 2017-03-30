@@ -1,0 +1,17 @@
+{% extends "svenska_sagner/harad_base.html" %}
+
+{% block title %}
+    Delete {{ harad }}
+{% endblock %}
+
+{% block content %}
+<h1>Delete {{ harad }}</h1>
+
+<form action="" method="post">{% csrf_token %}
+    <p>Are you sure you want to delete {{ harad }}?</p>
+    <input type="submit" value="Confirm" />
+</form>
+
+<a href={% url "harad_detail" harad.pk %}>Cancel</a>
+
+{% endblock %}

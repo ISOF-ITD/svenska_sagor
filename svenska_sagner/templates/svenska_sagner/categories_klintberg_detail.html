@@ -1,0 +1,14 @@
+{% extends "svenska_sagner/categories_klintberg_base.html" %}
+
+{% block title %}
+    {{ categories_klintberg }}
+{% endblock %}
+
+{% block content %}
+    <h1><a href={% url "categories_klintberg_list" %}>CategoriesKlintberg</a></h1>
+    <h2>{{ categories_klintberg }} | <a href={% url "categories_klintberg_update" categories_klintberg.pk %}>Update</a> | 
+    <form style="display:inline;" action={% url "categories_klintberg_delete" categories_klintberg.pk %} method="post" onsubmit="return confirm('Are you sure you want to delete {{ categories_klintberg }}?')">{% csrf_token %}
+    <input type="submit" value="Delete" />
+    </form>
+    </h2>
+{% endblock %}

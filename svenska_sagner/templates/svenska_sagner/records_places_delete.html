@@ -1,0 +1,17 @@
+{% extends "svenska_sagner/records_places_base.html" %}
+
+{% block title %}
+    Delete {{ records_places }}
+{% endblock %}
+
+{% block content %}
+<h1>Delete {{ records_places }}</h1>
+
+<form action="" method="post">{% csrf_token %}
+    <p>Are you sure you want to delete {{ records_places }}?</p>
+    <input type="submit" value="Confirm" />
+</form>
+
+<a href={% url "records_places_detail" records_places.pk %}>Cancel</a>
+
+{% endblock %}

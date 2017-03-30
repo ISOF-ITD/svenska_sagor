@@ -1,0 +1,14 @@
+{% extends "svenska_sagner/persons_places_base.html" %}
+
+{% block title %}
+    {{ persons_places }}
+{% endblock %}
+
+{% block content %}
+    <h1><a href={% url "persons_places_list" %}>PersonsPlaces</a></h1>
+    <h2>{{ persons_places }} | <a href={% url "persons_places_update" persons_places.pk %}>Update</a> | 
+    <form style="display:inline;" action={% url "persons_places_delete" persons_places.pk %} method="post" onsubmit="return confirm('Are you sure you want to delete {{ persons_places }}?')">{% csrf_token %}
+    <input type="submit" value="Delete" />
+    </form>
+    </h2>
+{% endblock %}

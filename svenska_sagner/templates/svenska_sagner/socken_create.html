@@ -1,0 +1,16 @@
+{% extends "svenska_sagner/socken_base.html" %}
+
+{% block title %}
+    Create Socken
+{% endblock %}
+
+{% block content %}
+<h1><a href={% url "socken_list" %}>Socken</a></h1>
+<h2>Create Socken</h2>
+
+<form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Create" />
+</form>
+<a href={% url "socken_list" %}>Cancel</a>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "svenska_sagner/records_category_base.html" %}
+
+{% block title %}
+    {{ records_category }}
+{% endblock %}
+
+{% block content %}
+    <h1><a href={% url "records_category_list" %}>RecordsCategory</a></h1>
+    <h2>{{ records_category }} | <a href={% url "records_category_update" records_category.pk %}>Update</a> | 
+    <form style="display:inline;" action={% url "records_category_delete" records_category.pk %} method="post" onsubmit="return confirm('Are you sure you want to delete {{ records_category }}?')">{% csrf_token %}
+    <input type="submit" value="Delete" />
+    </form>
+    </h2>
+{% endblock %}

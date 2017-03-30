@@ -1,0 +1,19 @@
+{% extends "svenska_sagner/socken_v1_base.html" %}
+
+{% block title %}
+    Update {{ socken_v1 }}
+{% endblock %}
+
+{% block content %}
+<h1><a href={% url "socken_v1_list" %}>SockenV1</a></h1>
+<h2>Update {{ socken_v1 }}</h2>
+
+<form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Update" />
+</form>
+<a href={% url "socken_v1_detail" socken_v1.pk %}>Cancel</a>
+<form style="display:inline;" action={% url "socken_v1_delete" socken_v1.pk %} method="post" onsubmit="return confirm('Are you sure you want to delete {{ socken_v1 }}?')">{% csrf_token %}
+    <input type="submit" value="Delete" />
+</form>
+{% endblock %}
