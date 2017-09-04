@@ -4,5 +4,5 @@ from django.apps import AppConfig
 
 
 class SagenkartaDjangoAdminConfig(AppConfig):
-    name = 'sagenkarta_admin'
+    name = 'Sagenkarta-Admin'
     verbose_name = 'Sägendatabas'

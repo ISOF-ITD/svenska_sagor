@@ -1,1 +1,1 @@
-default_app_config = 'sagenkarta_admin.apps.SagenkartaDjangoAdminConfig'
+default_app_config = 'Sagenkarta-Admin.apps.SagenkartaDjangoAdminConfig'
