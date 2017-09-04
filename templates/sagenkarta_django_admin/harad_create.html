@@ -1,0 +1,16 @@
+{% extends "sagenkarta_admin/harad_base.html" %}
+
+{% block title %}
+    Create Harad
+{% endblock %}
+
+{% block content %}
+<h1><a href={% url "harad_list" %}>Harad</a></h1>
+<h2>Create Harad</h2>
+
+<form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Create" />
+</form>
+<a href={% url "harad_list" %}>Cancel</a>
+{% endblock %}

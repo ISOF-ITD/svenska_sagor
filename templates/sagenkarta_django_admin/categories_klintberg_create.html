@@ -1,0 +1,16 @@
+{% extends "sagenkarta_admin/categories_klintberg_base.html" %}
+
+{% block title %}
+    Create CategoriesKlintberg
+{% endblock %}
+
+{% block content %}
+<h1><a href={% url "categories_klintberg_list" %}>CategoriesKlintberg</a></h1>
+<h2>Create CategoriesKlintberg</h2>
+
+<form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Create" />
+</form>
+<a href={% url "categories_klintberg_list" %}>Cancel</a>
+{% endblock %}

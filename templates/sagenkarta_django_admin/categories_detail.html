@@ -1,0 +1,14 @@
+{% extends "sagenkarta_admin/categories_base.html" %}
+
+{% block title %}
+    {{ categories }}
+{% endblock %}
+
+{% block content %}
+    <h1><a href={% url "categories_list" %}>Categories</a></h1>
+    <h2>{{ categories }} | <a href={% url "categories_update" categories.pk %}>Update</a> | 
+    <form style="display:inline;" action={% url "categories_delete" categories.pk %} method="post" onsubmit="return confirm('Are you sure you want to delete {{ categories }}?')">{% csrf_token %}
+    <input type="submit" value="Delete" />
+    </form>
+    </h2>
+{% endblock %}

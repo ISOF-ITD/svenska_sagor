@@ -1,0 +1,16 @@
+{% extends "sagenkarta_admin/media_base.html" %}
+
+{% block title %}
+    Create Media
+{% endblock %}
+
+{% block content %}
+<h1><a href={% url "media_list" %}>Media</a></h1>
+<h2>Create Media</h2>
+
+<form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Create" />
+</form>
+<a href={% url "media_list" %}>Cancel</a>
+{% endblock %}

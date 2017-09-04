@@ -1,0 +1,14 @@
+{% extends "sagenkarta_admin/harad_base.html" %}
+
+{% block title %}
+    {{ harad }}
+{% endblock %}
+
+{% block content %}
+    <h1><a href={% url "harad_list" %}>Harad</a></h1>
+    <h2>{{ harad }} | <a href={% url "harad_update" harad.pk %}>Update</a> | 
+    <form style="display:inline;" action={% url "harad_delete" harad.pk %} method="post" onsubmit="return confirm('Are you sure you want to delete {{ harad }}?')">{% csrf_token %}
+    <input type="submit" value="Delete" />
+    </form>
+    </h2>
+{% endblock %}

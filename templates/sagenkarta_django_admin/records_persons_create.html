@@ -1,0 +1,16 @@
+{% extends "sagenkarta_admin/records_persons_base.html" %}
+
+{% block title %}
+    Create RecordsPersons
+{% endblock %}
+
+{% block content %}
+<h1><a href={% url "records_persons_list" %}>RecordsPersons</a></h1>
+<h2>Create RecordsPersons</h2>
+
+<form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Create" />
+</form>
+<a href={% url "records_persons_list" %}>Cancel</a>
+{% endblock %}

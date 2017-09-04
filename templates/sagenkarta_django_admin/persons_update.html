@@ -1,0 +1,19 @@
+{% extends "sagenkarta_admin/persons_base.html" %}
+
+{% block title %}
+    Update {{ persons }}
+{% endblock %}
+
+{% block content %}
+<h1><a href={% url "persons_list" %}>Persons</a></h1>
+<h2>Update {{ persons }}</h2>
+
+<form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Update" />
+</form>
+<a href={% url "persons_detail" persons.pk %}>Cancel</a>
+<form style="display:inline;" action={% url "persons_delete" persons.pk %} method="post" onsubmit="return confirm('Are you sure you want to delete {{ persons }}?')">{% csrf_token %}
+    <input type="submit" value="Delete" />
+</form>
+{% endblock %}

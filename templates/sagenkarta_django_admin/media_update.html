@@ -1,0 +1,19 @@
+{% extends "sagenkarta_admin/media_base.html" %}
+
+{% block title %}
+    Update {{ media }}
+{% endblock %}
+
+{% block content %}
+<h1><a href={% url "media_list" %}>Media</a></h1>
+<h2>Update {{ media }}</h2>
+
+<form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Update" />
+</form>
+<a href={% url "media_detail" media.pk %}>Cancel</a>
+<form style="display:inline;" action={% url "media_delete" media.pk %} method="post" onsubmit="return confirm('Are you sure you want to delete {{ media }}?')">{% csrf_token %}
+    <input type="submit" value="Delete" />
+</form>
+{% endblock %}
