@@ -10,7 +10,7 @@ from django.http import Http404
 
 class RecordsListView(ListView):
     model = Records
-    template_name = "sagenkarta_admin/records_list.html"
+    template_name = "Sagenkarta-Admin/records_list.html"
     paginate_by = 20
     context_object_name = "records_list"
     allow_empty = True
@@ -57,7 +57,7 @@ class RecordsListView(ListView):
 
 class RecordsDetailView(DetailView):
     model = Records
-    template_name = "sagenkarta_admin/records_detail.html"
+    template_name = "Sagenkarta-Admin/records_detail.html"
     context_object_name = "records"
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
@@ -99,7 +99,7 @@ class RecordsCreateView(CreateView):
     model = Records
     form_class = RecordsForm
     # fields = ['title', 'text', 'year', 'category', 'archive', 'archive_id', 'type', 'archive_page', 'source', 'comment', 'informant_name', 'changedate']
-    template_name = "sagenkarta_admin/records_create.html"
+    template_name = "Sagenkarta-Admin/records_create.html"
     success_url = reverse_lazy("records_list")
 
     def __init__(self, **kwargs):
@@ -152,7 +152,7 @@ class RecordsUpdateView(UpdateView):
     model = Records
     form_class = RecordsForm
     # fields = ['title', 'text', 'year', 'category', 'archive', 'archive_id', 'type', 'archive_page', 'source', 'comment', 'informant_name', 'changedate']
-    template_name = "sagenkarta_admin/records_update.html"
+    template_name = "Sagenkarta-Admin/records_update.html"
     initial = {}
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
@@ -219,7 +219,7 @@ class RecordsUpdateView(UpdateView):
 
 class RecordsDeleteView(DeleteView):
     model = Records
-    template_name = "sagenkarta_admin/records_delete.html"
+    template_name = "Sagenkarta-Admin/records_delete.html"
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
     pk_url_kwarg = 'pk'

@@ -10,7 +10,7 @@ from django.http import Http404
 
 class SockenV1ListView(ListView):
     model = SockenV1
-    template_name = "sagenkarta_admin/socken_v1_list.html"
+    template_name = "Sagenkarta-Admin/socken_v1_list.html"
     paginate_by = 20
     context_object_name = "socken_v1_list"
     allow_empty = True
@@ -57,7 +57,7 @@ class SockenV1ListView(ListView):
 
 class SockenV1DetailView(DetailView):
     model = SockenV1
-    template_name = "sagenkarta_admin/socken_v1_detail.html"
+    template_name = "Sagenkarta-Admin/socken_v1_detail.html"
     context_object_name = "socken_v1"
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
@@ -99,7 +99,7 @@ class SockenV1CreateView(CreateView):
     model = SockenV1
     form_class = SockenV1Form
     # fields = ['name', 'harad', 'lat', 'lng', 'changedate']
-    template_name = "sagenkarta_admin/socken_v1_create.html"
+    template_name = "Sagenkarta-Admin/socken_v1_create.html"
     success_url = reverse_lazy("socken_v1_list")
 
     def __init__(self, **kwargs):
@@ -152,7 +152,7 @@ class SockenV1UpdateView(UpdateView):
     model = SockenV1
     form_class = SockenV1Form
     # fields = ['name', 'harad', 'lat', 'lng', 'changedate']
-    template_name = "sagenkarta_admin/socken_v1_update.html"
+    template_name = "Sagenkarta-Admin/socken_v1_update.html"
     initial = {}
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
@@ -219,7 +219,7 @@ class SockenV1UpdateView(UpdateView):
 
 class SockenV1DeleteView(DeleteView):
     model = SockenV1
-    template_name = "sagenkarta_admin/socken_v1_delete.html"
+    template_name = "Sagenkarta-Admin/socken_v1_delete.html"
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
     pk_url_kwarg = 'pk'

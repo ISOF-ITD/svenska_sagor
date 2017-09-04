@@ -10,7 +10,7 @@ from django.http import Http404
 
 class CategoriesListView(ListView):
     model = Categories
-    template_name = "sagenkarta_admin/categories_list.html"
+    template_name = "Sagenkarta-Admin/categories_list.html"
     paginate_by = 20
     context_object_name = "categories_list"
     allow_empty = True
@@ -57,7 +57,7 @@ class CategoriesListView(ListView):
 
 class CategoriesDetailView(DetailView):
     model = Categories
-    template_name = "sagenkarta_admin/categories_detail.html"
+    template_name = "Sagenkarta-Admin/categories_detail.html"
     context_object_name = "categories"
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
@@ -99,7 +99,7 @@ class CategoriesCreateView(CreateView):
     model = Categories
     form_class = CategoriesForm
     # fields = ['name', 'name_en']
-    template_name = "sagenkarta_admin/categories_create.html"
+    template_name = "Sagenkarta-Admin/categories_create.html"
     success_url = reverse_lazy("categories_list")
 
     def __init__(self, **kwargs):
@@ -152,7 +152,7 @@ class CategoriesUpdateView(UpdateView):
     model = Categories
     form_class = CategoriesForm
     # fields = ['name', 'name_en']
-    template_name = "sagenkarta_admin/categories_update.html"
+    template_name = "Sagenkarta-Admin/categories_update.html"
     initial = {}
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
@@ -219,7 +219,7 @@ class CategoriesUpdateView(UpdateView):
 
 class CategoriesDeleteView(DeleteView):
     model = Categories
-    template_name = "sagenkarta_admin/categories_delete.html"
+    template_name = "Sagenkarta-Admin/categories_delete.html"
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
     pk_url_kwarg = 'pk'

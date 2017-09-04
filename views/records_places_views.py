@@ -10,7 +10,7 @@ from django.http import Http404
 
 class RecordsPlacesListView(ListView):
     model = RecordsPlaces
-    template_name = "sagenkarta_admin/records_places_list.html"
+    template_name = "Sagenkarta-Admin/records_places_list.html"
     paginate_by = 20
     context_object_name = "records_places_list"
     allow_empty = True
@@ -57,7 +57,7 @@ class RecordsPlacesListView(ListView):
 
 class RecordsPlacesDetailView(DetailView):
     model = RecordsPlaces
-    template_name = "sagenkarta_admin/records_places_detail.html"
+    template_name = "Sagenkarta-Admin/records_places_detail.html"
     context_object_name = "records_places"
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
@@ -99,7 +99,7 @@ class RecordsPlacesCreateView(CreateView):
     model = RecordsPlaces
     form_class = RecordsPlacesForm
     # fields = ['record', 'place']
-    template_name = "sagenkarta_admin/records_places_create.html"
+    template_name = "Sagenkarta-Admin/records_places_create.html"
     success_url = reverse_lazy("records_places_list")
 
     def __init__(self, **kwargs):
@@ -152,7 +152,7 @@ class RecordsPlacesUpdateView(UpdateView):
     model = RecordsPlaces
     form_class = RecordsPlacesForm
     # fields = ['record', 'place']
-    template_name = "sagenkarta_admin/records_places_update.html"
+    template_name = "Sagenkarta-Admin/records_places_update.html"
     initial = {}
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
@@ -219,7 +219,7 @@ class RecordsPlacesUpdateView(UpdateView):
 
 class RecordsPlacesDeleteView(DeleteView):
     model = RecordsPlaces
-    template_name = "sagenkarta_admin/records_places_delete.html"
+    template_name = "Sagenkarta-Admin/records_places_delete.html"
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
     pk_url_kwarg = 'pk'

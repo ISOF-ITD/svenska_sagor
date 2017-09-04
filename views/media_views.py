@@ -10,7 +10,7 @@ from django.http import Http404
 
 class MediaListView(ListView):
     model = Media
-    template_name = "sagenkarta_admin/media_list.html"
+    template_name = "Sagenkarta-Admin/media_list.html"
     paginate_by = 20
     context_object_name = "media_list"
     allow_empty = True
@@ -57,7 +57,7 @@ class MediaListView(ListView):
 
 class MediaDetailView(DetailView):
     model = Media
-    template_name = "sagenkarta_admin/media_detail.html"
+    template_name = "Sagenkarta-Admin/media_detail.html"
     context_object_name = "media"
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
@@ -99,7 +99,7 @@ class MediaCreateView(CreateView):
     model = Media
     form_class = MediaForm
     # fields = ['source', 'type']
-    template_name = "sagenkarta_admin/media_create.html"
+    template_name = "Sagenkarta-Admin/media_create.html"
     success_url = reverse_lazy("media_list")
 
     def __init__(self, **kwargs):
@@ -152,7 +152,7 @@ class MediaUpdateView(UpdateView):
     model = Media
     form_class = MediaForm
     # fields = ['source', 'type']
-    template_name = "sagenkarta_admin/media_update.html"
+    template_name = "Sagenkarta-Admin/media_update.html"
     initial = {}
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
@@ -219,7 +219,7 @@ class MediaUpdateView(UpdateView):
 
 class MediaDeleteView(DeleteView):
     model = Media
-    template_name = "sagenkarta_admin/media_delete.html"
+    template_name = "Sagenkarta-Admin/media_delete.html"
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
     pk_url_kwarg = 'pk'

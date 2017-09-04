@@ -10,7 +10,7 @@ from django.http import Http404
 
 class HaradListView(ListView):
     model = Harad
-    template_name = "sagenkarta_admin/harad_list.html"
+    template_name = "Sagenkarta-Admin/harad_list.html"
     paginate_by = 20
     context_object_name = "harad_list"
     allow_empty = True
@@ -57,7 +57,7 @@ class HaradListView(ListView):
 
 class HaradDetailView(DetailView):
     model = Harad
-    template_name = "sagenkarta_admin/harad_detail.html"
+    template_name = "Sagenkarta-Admin/harad_detail.html"
     context_object_name = "harad"
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
@@ -99,7 +99,7 @@ class HaradCreateView(CreateView):
     model = Harad
     form_class = HaradForm
     # fields = ['name', 'lan', 'landskap', 'country']
-    template_name = "sagenkarta_admin/harad_create.html"
+    template_name = "Sagenkarta-Admin/harad_create.html"
     success_url = reverse_lazy("harad_list")
 
     def __init__(self, **kwargs):
@@ -152,7 +152,7 @@ class HaradUpdateView(UpdateView):
     model = Harad
     form_class = HaradForm
     # fields = ['name', 'lan', 'landskap', 'country']
-    template_name = "sagenkarta_admin/harad_update.html"
+    template_name = "Sagenkarta-Admin/harad_update.html"
     initial = {}
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
@@ -219,7 +219,7 @@ class HaradUpdateView(UpdateView):
 
 class HaradDeleteView(DeleteView):
     model = Harad
-    template_name = "sagenkarta_admin/harad_delete.html"
+    template_name = "Sagenkarta-Admin/harad_delete.html"
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
     pk_url_kwarg = 'pk'

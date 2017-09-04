@@ -10,7 +10,7 @@ from django.http import Http404
 
 class RecordsMediaListView(ListView):
     model = RecordsMedia
-    template_name = "sagenkarta_admin/records_media_list.html"
+    template_name = "Sagenkarta-Admin/records_media_list.html"
     paginate_by = 20
     context_object_name = "records_media_list"
     allow_empty = True
@@ -57,7 +57,7 @@ class RecordsMediaListView(ListView):
 
 class RecordsMediaDetailView(DetailView):
     model = RecordsMedia
-    template_name = "sagenkarta_admin/records_media_detail.html"
+    template_name = "Sagenkarta-Admin/records_media_detail.html"
     context_object_name = "records_media"
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
@@ -99,7 +99,7 @@ class RecordsMediaCreateView(CreateView):
     model = RecordsMedia
     form_class = RecordsMediaForm
     # fields = ['record', 'media']
-    template_name = "sagenkarta_admin/records_media_create.html"
+    template_name = "Sagenkarta-Admin/records_media_create.html"
     success_url = reverse_lazy("records_media_list")
 
     def __init__(self, **kwargs):
@@ -152,7 +152,7 @@ class RecordsMediaUpdateView(UpdateView):
     model = RecordsMedia
     form_class = RecordsMediaForm
     # fields = ['record', 'media']
-    template_name = "sagenkarta_admin/records_media_update.html"
+    template_name = "Sagenkarta-Admin/records_media_update.html"
     initial = {}
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
@@ -219,7 +219,7 @@ class RecordsMediaUpdateView(UpdateView):
 
 class RecordsMediaDeleteView(DeleteView):
     model = RecordsMedia
-    template_name = "sagenkarta_admin/records_media_delete.html"
+    template_name = "Sagenkarta-Admin/records_media_delete.html"
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
     pk_url_kwarg = 'pk'

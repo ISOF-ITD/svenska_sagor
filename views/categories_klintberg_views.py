@@ -10,7 +10,7 @@ from django.http import Http404
 
 class CategoriesKlintbergListView(ListView):
     model = CategoriesKlintberg
-    template_name = "sagenkarta_admin/categories_klintberg_list.html"
+    template_name = "Sagenkarta-Admin/categories_klintberg_list.html"
     paginate_by = 20
     context_object_name = "categories_klintberg_list"
     allow_empty = True
@@ -57,7 +57,7 @@ class CategoriesKlintbergListView(ListView):
 
 class CategoriesKlintbergDetailView(DetailView):
     model = CategoriesKlintberg
-    template_name = "sagenkarta_admin/categories_klintberg_detail.html"
+    template_name = "Sagenkarta-Admin/categories_klintberg_detail.html"
     context_object_name = "categories_klintberg"
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
@@ -99,7 +99,7 @@ class CategoriesKlintbergCreateView(CreateView):
     model = CategoriesKlintberg
     form_class = CategoriesKlintbergForm
     # fields = ['name', 'name_en', 'level']
-    template_name = "sagenkarta_admin/categories_klintberg_create.html"
+    template_name = "Sagenkarta-Admin/categories_klintberg_create.html"
     success_url = reverse_lazy("categories_klintberg_list")
 
     def __init__(self, **kwargs):
@@ -152,7 +152,7 @@ class CategoriesKlintbergUpdateView(UpdateView):
     model = CategoriesKlintberg
     form_class = CategoriesKlintbergForm
     # fields = ['name', 'name_en', 'level']
-    template_name = "sagenkarta_admin/categories_klintberg_update.html"
+    template_name = "Sagenkarta-Admin/categories_klintberg_update.html"
     initial = {}
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
@@ -219,7 +219,7 @@ class CategoriesKlintbergUpdateView(UpdateView):
 
 class CategoriesKlintbergDeleteView(DeleteView):
     model = CategoriesKlintberg
-    template_name = "sagenkarta_admin/categories_klintberg_delete.html"
+    template_name = "Sagenkarta-Admin/categories_klintberg_delete.html"
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
     pk_url_kwarg = 'pk'
