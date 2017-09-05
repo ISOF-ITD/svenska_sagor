@@ -60,9 +60,9 @@ class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
     extra_list_filter = ['type', 'category']
     extra_search_fields = []
     list_editable = ['title', 'archive', 'category', 'type']
-    raw_id_fields = ['media']
+    raw_id_fields = ['media', 'persons']
     inlines = [RecordsPersonsInline, RecordsPlacesInline]
-    filter_vertical = []
+    filter_vertical = ['persons']
     filter_horizontal = []
     radio_fields = {}
     prepopulated_fields = {}

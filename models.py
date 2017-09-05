@@ -7,6 +7,7 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from __future__ import unicode_literals
 from django.utils.safestring import mark_safe
+from string import Template
 
 from django.db import models
 
@@ -35,13 +36,40 @@ class Socken(models.Model):
     #changedate = models.DateTimeField()
 
     def map_tag(self):
-        return mark_safe('<link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" /><script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script><div id="socken_map" style="width: 100%; height: 400px;"><script type="text/javascript">var map = L.map("socken_map").setView(['+str(self.lat)+', '+str(self.lng)+'], 8); L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {attribution: "&copy; <a href=\'http://osm.org/copyright\'>OpenStreetMap</a> contributors"}).addTo(map);L.marker(['+str(self.lat)+', '+str(self.lng)+']).addTo(map);</script></div>');
+        values = {
+            'lat': str(self.lat),
+            'lng': str(self.lng)
+        }
+        map_template = """
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+            <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+            <div id="socken_map" style="width: 100%; height: 400px;"></div>
+            <script type="text/javascript">
+                var map = L.map("socken_map").setView([${lat}, ${lng}], 8);
+                L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {attribution: "&copy; <a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"}).addTo(map);
+                var marker = L.marker([${lat}, ${lng}]);
+                marker.addTo(map);
+
+                map.on('click', function(e) {
+                    marker.setLatLng(e.latlng);
+
+                    django.jQuery('#id_lat').val(e.latlng.lat.toFixed(6));
+                    django.jQuery('#id_lng').val(e.latlng.lng.toFixed(6));
+                });
+            </script>
+        """
+
+        template = Template(map_template)
+
+        map_html = template.substitute(values)
+
+        return mark_safe(map_html);
     
     map_tag.short_description = 'Karta'
     map_tag.allow_tags = True
 
     def __str__(self):
-        return self.name+' ('+str(self.id)+')'
+        return self.name+' ('+str(self.id)+') '
 
     class Meta:
         managed = False
@@ -196,7 +224,7 @@ class RecordsMedia(models.Model):
 class RecordsPersons(models.Model):
     record = models.ForeignKey(Records, db_column='record')
     person = models.ForeignKey(Persons, db_column='person')
-    relation = models.CharField(max_length=5, blank=True, null=True, choices=[('i', 'Inormant'), ('c', 'Uppteckare')])
+    relation = models.CharField(max_length=5, blank=True, null=True, choices=[('i', 'Informant'), ('c', 'Uppteckare')])
 
     class Meta:
         managed = False
