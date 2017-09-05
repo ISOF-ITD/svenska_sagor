@@ -45,16 +45,16 @@ class Socken(models.Model):
             <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
             <div id="socken_map" style="width: 100%; height: 400px;"></div>
             <script type="text/javascript">
-                var map = L.map("socken_map").setView([${lat}, ${lng}], 8);
+                var map = L.map("socken_map").setView([${lat}, ${lng}], 8); // Skapar en karta
                 L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {attribution: "&copy; <a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"}).addTo(map);
-                var marker = L.marker([${lat}, ${lng}]);
+                var marker = L.marker([${lat}, ${lng}]); // Lägger till en L.marker
                 marker.addTo(map);
 
-                map.on('click', function(e) {
-                    marker.setLatLng(e.latlng);
+                map.on('click', function(e) { // Map click handler
+                    marker.setLatLng(e.latlng); // Uppdaterar punkten på kartan
 
-                    django.jQuery('#id_lat').val(e.latlng.lat.toFixed(6));
-                    django.jQuery('#id_lng').val(e.latlng.lng.toFixed(6));
+                    django.jQuery('#id_lat').val(e.latlng.lat.toFixed(6)); // Skriver e.latlng.lat från punkter var man klickade på kartan till "lat" fältet
+                    django.jQuery('#id_lng').val(e.latlng.lng.toFixed(6)); // Skriver e.latlng.lng från punkter var man klickade på kartan till "lng" fältet
                 });
             </script>
         """
