@@ -57,7 +57,7 @@ class RecordsMediaInline(admin.TabularInline):
 class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
     list_display = ['id', 'title', 'archive', 'category', 'type']
     extra_list_display = []
-    extra_list_filter = ['type', 'category']
+    extra_list_filter = ['type', 'category', 'archive', 'places']
     extra_search_fields = []
     list_editable = ['title', 'archive', 'category', 'type']
     raw_id_fields = ['media', 'persons']
