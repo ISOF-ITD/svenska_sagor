@@ -100,29 +100,8 @@ class CategoriesKlintberg(models.Model):
         db_table = 'categories_klintberg'
 
 
-class Media(models.Model):
-    id = models.IntegerField(primary_key=True)
-    source = models.ImageField(verbose_name='Bildfil')
-    type = models.CharField(max_length=10, verbose_name='Mediatyp')
-
-    def image_tag(self):
-        return mark_safe('<a href="http://www4.sprakochfolkminnen.se/Folkminnen/Svenska_sagor_filer/%s" target="_blank"><img src="http://www4.sprakochfolkminnen.se/Folkminnen/Svenska_sagor_filer/%s" style="max-width: 300px" /></a>' % (self.source, self.source))
-    
-    image_tag.short_description = 'Bild'
-    image_tag.allow_tags = True
-
-    def __str__(self):
-        return '['+self.type+'] '+str(self.source)
-
-    class Meta:
-        managed = False
-        db_table = 'media'
-        verbose_name = 'Mediafil'
-        verbose_name_plural = 'Mediafiler'
-
-
 class Persons(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.CharField(primary_key=True,max_length=255)
     name = models.CharField(max_length=255)
     gender = models.CharField(max_length=2, choices=[('k', 'Kvinna'), ('m', 'Man')])
     birth_year = models.IntegerField(blank=True, null=True)
@@ -134,6 +113,12 @@ class Persons(models.Model):
         Socken, 
         through='PersonsPlaces', 
         through_fields = ('person', 'place')
+    )
+
+    record_objects = models.ManyToManyField(
+        'Records', 
+        through='RecordsPersons', 
+        verbose_name = 'Sägner'
     )
 
     def image_tag(self):
@@ -162,34 +147,60 @@ class PersonsPlaces(models.Model):
         db_table = 'persons_places'
 
 
+class Media(models.Model):
+    id = models.IntegerField(primary_key=True)
+    source = models.ImageField(verbose_name='Bildfil')
+    type = models.CharField(max_length=10, verbose_name='Mediatyp')
+
+    def image_tag(self):
+        return mark_safe('<a href="http://www4.sprakochfolkminnen.se/Folkminnen/Svenska_sagor_filer/%s" target="_blank"><img src="http://www4.sprakochfolkminnen.se/Folkminnen/Svenska_sagor_filer/%s" style="max-width: 300px" /></a>' % (self.source, self.source))
+    
+    image_tag.short_description = 'Bild'
+    image_tag.allow_tags = True
+
+    record_objects = models.ManyToManyField(
+        'Records',
+        through='RecordsMedia'
+    )
+
+    def __str__(self):
+        return '['+self.type+'] '+str(self.source)
+
+    class Meta:
+        managed = False
+        db_table = 'media'
+        verbose_name = 'Mediafil'
+        verbose_name_plural = 'Mediafiler'
+
+
 class Records(models.Model):
     title = models.CharField(max_length=255, verbose_name='Titel')
     text = models.TextField()
     year = models.IntegerField(blank=True, null=True)
     category = models.CharField(max_length=20, blank=True, verbose_name='Kategori')
-    archive = models.CharField(max_length=255, blank=True)
+    archive = models.CharField(max_length=255, blank=True, verbose_name='Arkiv')
     archive_id = models.CharField(max_length=255, blank=True)
-    type = models.CharField(max_length=20, verbose_name='Materialtyp', choices=[('arkiv', 'arkiv'), ('tryckt', 'tryckt'), ('register', 'register'), ('inspelning', 'inspelning')])
+    type = models.CharField(max_length=20, verbose_name='Materialtyp', choices=[('arkiv', 'arkiv'), ('tryckt', 'tryckt'), ('register', 'register'), ('inspelning', 'inspelning'), ('matkarta', 'matkarta')])
     archive_page = models.CharField(max_length=20, blank=True, null=True)
     source = models.TextField(blank=True, verbose_name='Källa')
     comment = models.TextField(blank=True)
-    changedate = models.DateTimeField()
-    persons = models.ManyToManyField(
+    country = models.CharField(max_length=255, blank=False, null=False, default='sweden', choices=[('sweden', 'Sverige'), ('norway', 'Norge')])
+    person_objects = models.ManyToManyField(
         Persons, 
         through='RecordsPersons', 
-        through_fields = ('record', 'person')
+    #    through_fields = ('record', 'person'),
+        verbose_name = 'Personer'
     )
     places = models.ManyToManyField(
         Socken, 
-        through='RecordsPlaces', 
-        through_fields = ('record', 'place')
+        through = 'RecordsPlaces', 
+    #    through_fields = ('record', 'place'),
+        verbose_name = 'Socken'
     )
-    media = models.ManyToManyField(
+    media_objects = models.ManyToManyField(
         Media,
-        through='RecordsMedia',
-        through_fields=('record', 'media')
+        through='RecordsMedia'
     )
-    #persons = models.ForeignKey(RecordsPersons)
 
     def __str__(self):
         return self.title
@@ -199,6 +210,22 @@ class Records(models.Model):
         db_table = 'records'
         verbose_name = 'Sägen'
         verbose_name_plural = 'Sägner'
+        permissions = (
+            ('view_records', 'Kan visa postar'),
+        )
+
+
+class RecordsMetadata(models.Model):
+    record = models.ForeignKey(Records, db_column='record', related_name='metadata')
+    type = models.CharField(max_length=30, blank=True, null=True, choices=[('sitevision_url', 'Sitevision url')])
+    value = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.type+': '+self.value if self.type else ''
+
+    class Meta:
+        managed = False
+        db_table = 'records_metadata'
 
 
 class RecordsCategory(models.Model):

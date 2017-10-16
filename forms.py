@@ -85,6 +85,7 @@ class RecordsPlacesForm(forms.ModelForm):
 
 
 class RecordsForm(forms.ModelForm):
+    metadata = forms.DateField(widget=forms.SelectDateWidget()))
 
     class Meta:
         model = Records
