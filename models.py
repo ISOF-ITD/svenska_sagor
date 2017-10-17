@@ -185,6 +185,7 @@ class Records(models.Model):
     source = models.TextField(blank=True, verbose_name='Källa')
     comment = models.TextField(blank=True)
     country = models.CharField(max_length=255, blank=False, null=False, default='sweden', choices=[('sweden', 'Sverige'), ('norway', 'Norge')])
+    changedate = models.DateTimeField()
     person_objects = models.ManyToManyField(
         Persons, 
         through='RecordsPersons', 
