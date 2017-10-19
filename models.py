@@ -12,6 +12,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save, m2m_changed
 import requests, json
 from django.db import models
+from threading import Timer
 
 import es_config
 
@@ -293,16 +294,21 @@ def model_m2m_changed(sender, **kwargs):
 	print(modelJson.json())
 
 def model_post_saved(sender, **kwargs):
-	modelId = kwargs['instance'].id
-	print('model_post_saved')
+	def save_es_model():
+		modelId = kwargs['instance'].id
+		print('model_post_saved')
 
-	modelResponseData = requests.get(es_config.restApiRecordUrl+str(modelId), verify=False)
-	modelJson = modelResponseData.json()
-	print(es_config.restApiRecordUrl+str(modelId))
-	print(modelJson)
+		print(es_config.restApiRecordUrl+str(modelId))
 
-	esResponse = requests.put('https://'+es_config.user+':'+es_config.password+'@'+es_config.host+'/'+es_config.index_name+'/legend/'+str(modelId), data=json.dumps(modelJson), verify=False)
-	print(esResponse.json())
+		modelResponseData = requests.get(es_config.restApiRecordUrl+str(modelId), verify=False)
+		modelJson = modelResponseData.json()
+		print(modelJson)
+
+		esResponse = requests.put('https://'+es_config.user+':'+es_config.password+'@'+es_config.host+'/'+es_config.index_name+'/legend/'+str(modelId), data=json.dumps(modelJson), verify=False)
+		print(esResponse.json())
+
+	t = Timer(5, save_es_model)
+	t.start()
 
 
 post_save.connect(model_post_saved, sender=Records)
