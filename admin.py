@@ -90,7 +90,6 @@ class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super(RecordsAdmin, self).get_queryset(request)
-        print(str(request.user.groups.filter(name='Norge').exists()))
         if request.user.groups.filter(name='Norge').exists():
             return qs.filter(country='norway')
         return qs
@@ -124,7 +123,6 @@ class MediaAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super(MediaAdmin, self).get_queryset(request)
-        print(str(request.user.groups.filter(name='Norge').exists()))
         if request.user.groups.filter(name='Norge').exists():
             inner_qs = Records.objects.filter(country='norway')
             return qs.filter(record_objects__in=inner_qs)
@@ -178,7 +176,6 @@ class PersonsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super(PersonsAdmin, self).get_queryset(request)
-        print(str(request.user.groups.filter(name='Norge').exists()))
         if request.user.groups.filter(name='Norge').exists():
             inner_qs = Records.objects.filter(country='norway')
             return qs.filter(record_objects__in=inner_qs)
