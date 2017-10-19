@@ -178,7 +178,6 @@ class Media(models.Model):
 
 
 class Records(models.Model):
-	id = models.CharField(max_length=10, primary_key=True)
 	title = models.CharField(max_length=255, verbose_name='Titel')
 	text = models.TextField()
 	year = models.IntegerField(blank=True, null=True)
