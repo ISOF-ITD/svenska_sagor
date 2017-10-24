@@ -88,7 +88,7 @@ class Categories(models.Model):
 	type = models.CharField(max_length=255, choices=[('sägner', 'Sägner'), ('frågelista', 'Frågelista'), ('matkarta', 'Matkarta')])
 
 	def __str__(self):
-		return '('+self.id+') '+str(self.name)
+		return '('+self.id+') '+str(self.name)+' ['+self.type+']'
 
 	class Meta:
 		managed = False
