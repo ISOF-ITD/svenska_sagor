@@ -93,6 +93,7 @@ class Categories(models.Model):
 	class Meta:
 		managed = False
 		db_table = 'categories_v2'
+		ordering = ['type']
 		verbose_name = 'Kategori'
 		verbose_name_plural = 'Kategorier'
 
