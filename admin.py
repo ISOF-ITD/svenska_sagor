@@ -65,12 +65,12 @@ class RecordsMetadataInline(admin.TabularInline):
 
 
 class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
-    list_display = ['id', 'title', 'archive', 'category', 'type', 'country']
+    list_display = ['id', 'title', 'category', 'archive', 'type', 'country']
     extra_list_display = []
 #    list_filter = (('places', DropdownFilter),)
-    extra_list_filter = ['type', ('archive', DropdownFilter), ('category', DropdownFilter), ('places', RelatedDropdownFilter), 'country']
+    extra_list_filter = ['type', ('archive', DropdownFilter), ('category', RelatedDropdownFilter), ('places', RelatedDropdownFilter), 'country']
     extra_search_fields = []
-    list_editable = ['title', 'archive', 'category', 'type']
+    list_editable = ['title', 'archive', 'type']
     raw_id_fields = ['media_objects', 'person_objects']
     inlines = [RecordsPersonsInline, RecordsPlacesInline, RecordsMetadataInline]
     filter_vertical = []
@@ -79,7 +79,7 @@ class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
     prepopulated_fields = {}
     formfield_overrides = {}
     readonly_fields = ['id']
-    fields = ['title', ('category', 'type'), ('archive', 'year'), ('archive_page', 'archive_id'), 'text', 'source', 'comment','country']
+    fields = ['title', ('category', 'type'), ('archive', 'year'), ('archive_page', 'archive_id'), 'text', 'source', 'comment', 'country']
 
     def get_model_perms(self, request):
         return {
@@ -275,6 +275,7 @@ class CategoriesAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
     extra_list_display = []
     extra_list_filter = []
     extra_search_fields = []
+    list_display = ['id', 'name']
     list_editable = []
     raw_id_fields = []
     inlines = []
@@ -283,7 +284,7 @@ class CategoriesAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
     radio_fields = {}
     prepopulated_fields = {}
     formfield_overrides = {}
-    readonly_fields = ['id']
+    readonly_fields = []
 
 
 class HaradAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):

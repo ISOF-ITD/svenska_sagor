@@ -84,11 +84,15 @@ class Socken(models.Model):
 class Categories(models.Model):
 	id = models.CharField(primary_key=True, max_length=10)
 	name = models.CharField(max_length=255)
-	name_en = models.CharField(max_length=255)
+	name_en = models.CharField(max_length=255, null=True, blank=True)
+	type = models.CharField(max_length=255, choices=[('sägner', 'Sägner'), ('frågelista', 'Frågelista')])
+
+	def __str__(self):
+		return '('+self.id+') '+str(self.name)
 
 	class Meta:
 		managed = False
-		db_table = 'categories'
+		db_table = 'categories_v2'
 		verbose_name = 'Kategori'
 		verbose_name_plural = 'Kategorier'
 
@@ -181,15 +185,16 @@ class Records(models.Model):
 	title = models.CharField(max_length=255, verbose_name='Titel')
 	text = models.TextField()
 	year = models.IntegerField(blank=True, null=True)
-	category = models.CharField(max_length=20, blank=True, verbose_name='Kategori')
+	category = models.ForeignKey(Categories, db_column='category')
+	#category = models.CharField(max_length=20, blank=True, verbose_name='Kategori')
 	archive = models.CharField(max_length=255, blank=True, verbose_name='Arkiv')
 	archive_id = models.CharField(max_length=255, blank=True)
-	type = models.CharField(max_length=20, verbose_name='Materialtyp', choices=[('arkiv', 'arkiv'), ('tryckt', 'tryckt'), ('register', 'register'), ('inspelning', 'inspelning'), ('matkarta', 'matkarta')])
+	type = models.CharField(max_length=20, verbose_name='Materialtyp', choices=[('arkiv', 'arkiv'), ('tryckt', 'tryckt'), ('register', 'register'), ('inspelning', 'inspelning'), ('matkarta', 'matkarta'), ('frågelista', 'frågelista')])
 	archive_page = models.CharField(max_length=20, blank=True, null=True)
 	source = models.TextField(blank=True, verbose_name='Källa')
 	comment = models.TextField(blank=True)
 	country = models.CharField(max_length=255, blank=False, null=False, default='sweden', choices=[('sweden', 'Sverige'), ('norway', 'Norge')])
-	changedate = models.DateTimeField()
+	changedate = models.DateTimeField(auto_now_add=True, blank=True)
 	person_objects = models.ManyToManyField(
 		Persons, 
 		through='RecordsPersons', 
@@ -297,13 +302,20 @@ def model_post_saved(sender, **kwargs):
 		modelId = kwargs['instance'].id
 		print('model_post_saved')
 
-		print(es_config.restApiRecordUrl+str(modelId))
-
 		modelResponseData = requests.get(es_config.restApiRecordUrl+str(modelId), verify=False)
+		modelResponseData.encoding = 'utf-8'
 		modelJson = modelResponseData.json()
-		print(modelJson)
 
-		esResponse = requests.put('https://'+es_config.user+':'+es_config.password+'@'+es_config.host+'/'+es_config.index_name+'/legend/'+str(modelId), data=json.dumps(modelJson), verify=False)
+		document = {
+			'doc': modelJson
+		}
+
+		esResponse = requests.post('https://'+es_config.user+':'+es_config.password+'@'+es_config.host+'/'+es_config.index_name+'/legend/'+str(modelId)+'/_update', data=json.dumps(document).encode('utf-8'), verify=False)
+
+		print(esResponse.json())
+		if 'status' in esResponse.json() and esResponse.json()['status'] == 404:
+			esResponse = requests.put('https://'+es_config.user+':'+es_config.password+'@'+es_config.host+'/'+es_config.index_name+'/legend/'+str(modelId), data=json.dumps(modelJson).encode('utf-8'), verify=False)
+
 		print(esResponse.json())
 
 	t = Timer(5, save_es_model)
