@@ -6,7 +6,6 @@ urlpatterns = [
     url(r'^socken_v1_s/', include('Sagenkarta-Admin.urls.socken_v1_urls')),
     url(r'^records_personss/', include('Sagenkarta-Admin.urls.records_persons_urls')),
     url(r'^recordss/', include('Sagenkarta-Admin.urls.records_urls')),
-    url(r'^medias/', include('Sagenkarta-Admin.urls.media_urls')),
     url(r'^persons_placess/', include('Sagenkarta-Admin.urls.persons_places_urls')),
     url(r'^personss/', include('Sagenkarta-Admin.urls.persons_urls')),
     url(r'^sockens/', include('Sagenkarta-Admin.urls.socken_urls')),
