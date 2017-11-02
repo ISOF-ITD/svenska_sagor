@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CategoriesKlintberg, RecordsPlaces, Records, Media, RecordsCategory, Persons, RecordsPersons, PersonsPlaces, SockenV1, RecordsMedia, Socken, Categories, Harad, RecordsMetadata
+from .models import CategoriesKlintberg, RecordsPlaces, Records, RecordsCategory, Persons, RecordsPersons, PersonsPlaces, SockenV1, RecordsMedia, Socken, Categories, Harad, RecordsMetadata
 from django_baker.admin import ExtendedModelAdminMixin
 from .filters import DropdownFilter, RelatedDropdownFilter
 from django.contrib.auth.models import User
@@ -56,7 +56,7 @@ class RecordsPlacesInline(admin.TabularInline):
 
 
 class RecordsMediaInline(admin.TabularInline):
-    model = Records.media_objects.through
+    model = RecordsMedia
     model._meta.verbose_name_plural = "Filer"
 
 
@@ -71,8 +71,8 @@ class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
     extra_list_filter = ['type', ('archive', DropdownFilter), ('category', RelatedDropdownFilter), ('places', RelatedDropdownFilter), 'country']
     extra_search_fields = []
     list_editable = ['title', 'archive', 'type']
-    raw_id_fields = ['media_objects', 'person_objects']
-    inlines = [RecordsPersonsInline, RecordsPlacesInline, RecordsMetadataInline]
+    raw_id_fields = ['person_objects']
+    inlines = [RecordsPersonsInline, RecordsPlacesInline, RecordsMetadataInline, RecordsMediaInline]
     filter_vertical = []
     filter_horizontal = []
     radio_fields = {}
@@ -98,35 +98,6 @@ class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
         form = super(RecordsAdmin, self).get_form(request, obj, **kwargs)
         form.base_fields['text'].widget.attrs['style'] = 'height: 500px;'
         return form
-
-
-class MediaRecordsInline(admin.TabularInline):
-    model = Media.record_objects.through
-    model._meta.verbose_name_plural = "Sägner"
-
-
-class MediaAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
-    list_display = ['id', 'source', 'type']
-    extra_list_display = []
-    extra_list_filter = ['type']
-    extra_search_fields = []
-    list_editable = []
-    raw_id_fields = []
-    inlines = []
-    filter_vertical = []
-    filter_horizontal = []
-    radio_fields = {}
-    prepopulated_fields = {}
-    formfield_overrides = {}
-    readonly_fields = ['id', 'image_tag']
-    fields = ['source', 'type', 'image_tag']
-
-    def get_queryset(self, request):
-        qs = super(MediaAdmin, self).get_queryset(request)
-        if request.user.groups.filter(name='Norge').exists():
-            inner_qs = Records.objects.filter(country='norway')
-            return qs.filter(record_objects__in=inner_qs)
-        return qs
 
 
 class RecordsCategoryAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
@@ -319,7 +290,6 @@ class CustomGroupAdmin(GroupAdmin):
 admin.site.register(CategoriesKlintberg, CategoriesKlintbergAdmin)
 admin.site.register(RecordsPlaces, RecordsPlacesAdmin)
 admin.site.register(Records, RecordsAdmin)
-admin.site.register(Media, MediaAdmin)
 admin.site.register(RecordsCategory, RecordsCategoryAdmin)
 admin.site.register(Persons, PersonsAdmin)
 admin.site.register(RecordsPersons, RecordsPersonsAdmin)

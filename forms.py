@@ -1,5 +1,5 @@
 from django import forms
-from .models import CategoriesKlintberg, RecordsPlaces, Records, Media, RecordsCategory, Persons, RecordsPersons, PersonsPlaces, SockenV1, RecordsMedia, Socken, Categories, Harad
+from .models import CategoriesKlintberg, RecordsPlaces, Records, RecordsCategory, Persons, RecordsPersons, PersonsPlaces, SockenV1, RecordsMedia, Socken, Categories, Harad
 
 
 class CategoriesKlintbergForm(forms.ModelForm):
@@ -157,45 +157,6 @@ class RecordsForm(forms.ModelForm):
 
     def save(self, commit=True):
         return super(RecordsForm, self).save(commit)
-
-
-class MediaForm(forms.ModelForm):
-
-    class Meta:
-        model = Media
-        fields = ['source', 'type']
-        exclude = []
-        widgets = None
-        localized_fields = None
-        labels = {}
-        help_texts = {}
-        error_messages = {}
-
-    def __init__(self, *args, **kwargs):
-        return super(MediaForm, self).__init__(*args, **kwargs)
-
-    def is_valid(self):
-        return super(MediaForm, self).is_valid()
-
-    def full_clean(self):
-        return super(MediaForm, self).full_clean()
-
-    def clean_source(self):
-        source = self.cleaned_data.get("source", None)
-        return source
-
-    def clean_type(self):
-        type = self.cleaned_data.get("type", None)
-        return type
-
-    def clean(self):
-        return super(MediaForm, self).clean()
-
-    def validate_unique(self):
-        return super(MediaForm, self).validate_unique()
-
-    def save(self, commit=True):
-        return super(MediaForm, self).save(commit)
 
 
 class RecordsCategoryForm(forms.ModelForm):
@@ -443,45 +404,6 @@ class SockenV1Form(forms.ModelForm):
 
     def save(self, commit=True):
         return super(SockenV1Form, self).save(commit)
-
-
-class RecordsMediaForm(forms.ModelForm):
-
-    class Meta:
-        model = RecordsMedia
-        fields = ['record', 'media']
-        exclude = []
-        widgets = None
-        localized_fields = None
-        labels = {}
-        help_texts = {}
-        error_messages = {}
-
-    def __init__(self, *args, **kwargs):
-        return super(RecordsMediaForm, self).__init__(*args, **kwargs)
-
-    def is_valid(self):
-        return super(RecordsMediaForm, self).is_valid()
-
-    def full_clean(self):
-        return super(RecordsMediaForm, self).full_clean()
-
-    def clean_record(self):
-        record = self.cleaned_data.get("record", None)
-        return record
-
-    def clean_media(self):
-        media = self.cleaned_data.get("media", None)
-        return media
-
-    def clean(self):
-        return super(RecordsMediaForm, self).clean()
-
-    def validate_unique(self):
-        return super(RecordsMediaForm, self).validate_unique()
-
-    def save(self, commit=True):
-        return super(RecordsMediaForm, self).save(commit)
 
 
 class SockenForm(forms.ModelForm):

@@ -156,32 +156,6 @@ class PersonsPlaces(models.Model):
 		db_table = 'persons_places'
 
 
-class Media(models.Model):
-	id = models.IntegerField(primary_key=True)
-	source = models.ImageField(verbose_name='Bildfil')
-	type = models.CharField(max_length=10, verbose_name='Mediatyp')
-
-	def image_tag(self):
-		return mark_safe('<a href="http://www4.sprakochfolkminnen.se/Folkminnen/Svenska_sagor_filer/%s" target="_blank"><img src="http://www4.sprakochfolkminnen.se/Folkminnen/Svenska_sagor_filer/%s" style="max-width: 300px" /></a>' % (self.source, self.source))
-	
-	image_tag.short_description = 'Bild'
-	image_tag.allow_tags = True
-
-	record_objects = models.ManyToManyField(
-		'Records',
-		through='RecordsMedia'
-	)
-
-	def __str__(self):
-		return '['+self.type+'] '+str(self.source)
-
-	class Meta:
-		managed = False
-		db_table = 'media'
-		verbose_name = 'Mediafil'
-		verbose_name_plural = 'Mediafiler'
-
-
 class Records(models.Model):
 	title = models.CharField(max_length=255, verbose_name='Titel')
 	text = models.TextField()
@@ -207,10 +181,6 @@ class Records(models.Model):
 		through = 'RecordsPlaces', 
 	#    through_fields = ('record', 'place'),
 		verbose_name = 'Socken'
-	)
-	media_objects = models.ManyToManyField(
-		Media,
-		through='RecordsMedia'
 	)
 
 	def __str__(self):
@@ -251,8 +221,9 @@ class RecordsCategory(models.Model):
 
 
 class RecordsMedia(models.Model):
-	record = models.ForeignKey(Records, db_column='record')
-	media = models.ForeignKey(Media, db_column='media')
+	record = models.ForeignKey(Records, db_column='record', related_name='media')
+	type = models.CharField(max_length=30, blank=True, null=True, choices=[('image', 'Bildfil'), ('pdf', 'Pdf'), ('audio', 'Ljudfil')])
+	source = models.CharField(max_length=255, blank=True, null=True)
 
 	class Meta:
 		managed = False
