@@ -2,7 +2,6 @@
 from .categories_klintberg_views import *  # NOQA
 from .records_places_views import *  # NOQA
 from .records_views import *  # NOQA
-from .media_views import *  # NOQA
 from .records_category_views import *  # NOQA
 from .persons_views import *  # NOQA
 from .records_persons_views import *  # NOQA
