@@ -9,7 +9,6 @@ urlpatterns = [
     url(r'^persons_placess/', include('Sagenkarta-Admin.urls.persons_places_urls')),
     url(r'^personss/', include('Sagenkarta-Admin.urls.persons_urls')),
     url(r'^sockens/', include('Sagenkarta-Admin.urls.socken_urls')),
-    url(r'^records_medias/', include('Sagenkarta-Admin.urls.records_media_urls')),
     url(r'^records_categorys/', include('Sagenkarta-Admin.urls.records_category_urls')),
     url(r'^categories_klintbergs/', include('Sagenkarta-Admin.urls.categories_klintberg_urls')),
     url(r'^categoriess/', include('Sagenkarta-Admin.urls.categories_urls')),
