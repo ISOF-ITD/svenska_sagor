@@ -158,7 +158,7 @@ class PersonsPlaces(models.Model):
 
 class Records(models.Model):
 	title = models.CharField(max_length=255, verbose_name='Titel')
-	text = models.TextField()
+	text = models.TextField(blank=True, null=True)
 	year = models.IntegerField(blank=True, null=True)
 	category = models.ForeignKey(Categories, db_column='category')
 	#category = models.CharField(max_length=20, blank=True, verbose_name='Kategori')
