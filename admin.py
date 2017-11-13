@@ -60,26 +60,31 @@ class RecordsMediaInline(admin.TabularInline):
     model._meta.verbose_name_plural = "Filer"
 
 
+class RecordsCategoriesInline(admin.TabularInline):
+    model = RecordsCategory
+    model._meta.verbose_name_plural = "Filer"
+
+
 class RecordsMetadataInline(admin.TabularInline):
     model = RecordsMetadata
 
 
 class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
-    list_display = ['id', 'title', 'category', 'archive', 'type', 'country']
+    list_display = ['id', 'title', 'archive', 'type', 'country']
     extra_list_display = []
 #    list_filter = (('places', DropdownFilter),)
-    extra_list_filter = ['type', ('archive', DropdownFilter), ('category', RelatedDropdownFilter), ('places', RelatedDropdownFilter), 'country']
+    extra_list_filter = ['type', ('archive', DropdownFilter), ('categories', RelatedDropdownFilter), ('places', RelatedDropdownFilter), 'country']
     extra_search_fields = []
     list_editable = ['title', 'archive', 'type']
     raw_id_fields = ['person_objects']
-    inlines = [RecordsPersonsInline, RecordsPlacesInline, RecordsMetadataInline, RecordsMediaInline]
+    inlines = [RecordsCategoriesInline, RecordsPersonsInline, RecordsPlacesInline, RecordsMetadataInline, RecordsMediaInline]
     filter_vertical = []
     filter_horizontal = []
     radio_fields = {}
     prepopulated_fields = {}
     formfield_overrides = {}
     readonly_fields = ['id']
-    fields = ['title', ('category', 'type'), ('archive', 'year'), ('archive_page', 'archive_id'), 'text', 'source', 'comment', 'country']
+    fields = ['title', ('type'), ('archive', 'year'), ('archive_page', 'archive_id'), 'text', 'source', 'comment', 'country']
 
     def get_model_perms(self, request):
         return {

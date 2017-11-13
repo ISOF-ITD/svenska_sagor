@@ -160,7 +160,7 @@ class Records(models.Model):
 	title = models.CharField(max_length=255, verbose_name='Titel')
 	text = models.TextField(blank=True, null=True)
 	year = models.IntegerField(blank=True, null=True)
-	category = models.ForeignKey(Categories, db_column='category')
+	#category = models.ForeignKey(Categories, db_column='category')
 	#category = models.CharField(max_length=20, blank=True, verbose_name='Kategori')
 	archive = models.CharField(max_length=255, blank=True, verbose_name='Arkiv')
 	archive_id = models.CharField(max_length=255, blank=True)
@@ -181,6 +181,12 @@ class Records(models.Model):
 		through = 'RecordsPlaces', 
 	#    through_fields = ('record', 'place'),
 		verbose_name = 'Socken'
+	)
+	categories = models.ManyToManyField(
+		Categories, 
+		through = 'RecordsCategory', 
+	#    through_fields = ('record', 'place'),
+		verbose_name = 'Kategorier'
 	)
 
 	def __str__(self):
@@ -207,17 +213,6 @@ class RecordsMetadata(models.Model):
 	class Meta:
 		managed = False
 		db_table = 'records_metadata'
-
-
-class RecordsCategory(models.Model):
-	record = models.IntegerField()
-	category = models.CharField(max_length=20)
-	level = models.IntegerField()
-	type = models.CharField(max_length=50)
-
-	class Meta:
-		managed = False
-		db_table = 'records_category'
 
 
 class RecordsMedia(models.Model):
@@ -248,6 +243,15 @@ class RecordsPlaces(models.Model):
 	class Meta:
 		managed = False
 		db_table = 'records_places'
+
+
+class RecordsCategory(models.Model):
+	record = models.ForeignKey(Records, db_column='record')
+	category = models.ForeignKey(Categories, db_column='category')
+
+	class Meta:
+		managed = False
+		db_table = 'records_category'
 
 
 class SockenV1(models.Model):
