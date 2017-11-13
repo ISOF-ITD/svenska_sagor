@@ -72,7 +72,9 @@ class RecordsMetadataInline(admin.TabularInline):
 def force_update(modeladmin, request, queryset):
     for model in queryset:
         model.changedate = time.strftime('%Y-%m-%d %H:%M:%S')
-        model.save();
+        model.save()
+        time.sleep(0.5)
+
 force_update.short_description = 'Force update'
 
 class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
