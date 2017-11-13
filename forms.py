@@ -88,7 +88,7 @@ class RecordsForm(forms.ModelForm):
 
     class Meta:
         model = Records
-        fields = ['title', 'text', 'year', 'category', 'archive', 'archive_id', 'type', 'archive_page', 'source', 'comment']
+        fields = ['title', 'text', 'year', 'archive', 'archive_id', 'type', 'archive_page', 'source', 'comment']
         exclude = []
         widgets = None
         localized_fields = None
