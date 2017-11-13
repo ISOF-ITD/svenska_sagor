@@ -163,7 +163,7 @@ class RecordsCategoryForm(forms.ModelForm):
 
     class Meta:
         model = RecordsCategory
-        fields = ['record', 'category', 'level', 'type']
+        fields = ['record', 'category']
         exclude = []
         widgets = None
         localized_fields = None
@@ -187,14 +187,6 @@ class RecordsCategoryForm(forms.ModelForm):
     def clean_category(self):
         category = self.cleaned_data.get("category", None)
         return category
-
-    def clean_level(self):
-        level = self.cleaned_data.get("level", None)
-        return level
-
-    def clean_type(self):
-        type = self.cleaned_data.get("type", None)
-        return type
 
     def clean(self):
         return super(RecordsCategoryForm, self).clean()
