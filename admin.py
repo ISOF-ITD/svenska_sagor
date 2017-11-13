@@ -8,6 +8,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.admin import GroupAdmin
 
 import sys
+import time
 
 class CategoriesKlintbergAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
     extra_list_display = []
@@ -68,6 +69,9 @@ class RecordsCategoriesInline(admin.TabularInline):
 class RecordsMetadataInline(admin.TabularInline):
     model = RecordsMetadata
 
+def force_update(modeladmin, request, queryset):
+    queryset.update(changedate=time.strftime('%Y-%m-%d %H:%M:%S'))
+force_update.short_description = 'Force update'
 
 class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
     list_display = ['id', 'title', 'archive', 'type', 'country']
@@ -84,6 +88,7 @@ class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
     prepopulated_fields = {}
     formfield_overrides = {}
     readonly_fields = ['id']
+    actions  = [force_update]
     fields = ['title', ('type'), ('archive', 'year'), ('archive_page', 'archive_id'), 'text', 'source', 'comment', 'country']
 
     def get_model_perms(self, request):
@@ -249,7 +254,7 @@ class SockenAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 
 class CategoriesAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
     extra_list_display = []
-    extra_list_filter = []
+    extra_list_filter = ['type']
     extra_search_fields = []
     list_display = ['id', 'name', 'type']
     list_editable = ['name', 'type']
