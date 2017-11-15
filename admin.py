@@ -155,7 +155,7 @@ class PersonsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
     fields = ['id', 'name', ('gender', 'birth_year'), 'address', 'biography', ('image', 'image_tag')]
 
     def lookup_allowed(self, lookup, value):
-        if lookup == 'record_objects__country':
+        if lookup == 'record_objects__country__exact':
             return True
         return super(PersonsAdmin, self).lookup_allowed(lookup, value)
 
