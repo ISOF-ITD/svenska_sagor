@@ -110,7 +110,7 @@ class CategoriesKlintberg(models.Model):
 
 
 class Persons(models.Model):
-	id = models.CharField(primary_key=True,max_length=255)
+	id = models.CharField(primary_key=True, max_length=255)
 	name = models.CharField(max_length=255)
 	gender = models.CharField(max_length=2, choices=[('k', 'Kvinna'), ('m', 'Man')])
 	birth_year = models.IntegerField(blank=True, null=True)
@@ -204,7 +204,7 @@ class Records(models.Model):
 
 class RecordsMetadata(models.Model):
 	record = models.ForeignKey(Records, db_column='record', related_name='metadata')
-	type = models.CharField(max_length=30, blank=True, null=True, choices=[('sitevision_url', 'Sitevision url')])
+	type = models.CharField(max_length=30, blank=True, null=True, choices=[('sitevision_url', 'Sitevision url'), ('filemaker_id', 'FileMaker ID')])
 	value = models.TextField(blank=True, null=True)
 
 	def __str__(self):
@@ -239,6 +239,7 @@ class RecordsPersons(models.Model):
 class RecordsPlaces(models.Model):
 	record = models.ForeignKey(Records, db_column='record')
 	place = models.ForeignKey(Socken, db_column='place')
+	type = models.CharField(max_length=20, blank=True, null=True, choices=[('place_collected', 'Insamlingsort'), ('place_mentioned', 'Nämns i texten')])
 
 	class Meta:
 		managed = False
