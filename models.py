@@ -9,7 +9,7 @@ from __future__ import unicode_literals
 from django.utils.safestring import mark_safe
 from string import Template
 from django.dispatch import receiver
-from django.db.models.signals import post_save, m2m_changed
+from django.db.models.signals import post_save, post_delete, m2m_changed
 import requests, json
 from django.db import models
 from threading import Timer
@@ -157,6 +157,25 @@ class PersonsPlaces(models.Model):
 
 
 class Records(models.Model):
+	type_choices = [
+		('arkiv', 'arkiv'), 
+		('tryckt', 'tryckt'), 
+		('register', 'register'), 
+		('inspelning', 'inspelning'), 
+		('matkarta', 'matkarta'), 
+		('frågelista', 'frågelista')
+	]
+
+	country_choices = [
+		('sweden', 'Sverige'), 
+		('norway', 'Norge')
+	]
+
+	language_choices = [
+		('swedish', 'Svenska'), 
+		('norwegian', 'Norska')
+	]
+
 	title = models.CharField(max_length=255, verbose_name='Titel')
 	text = models.TextField(blank=True, null=True)
 	year = models.IntegerField(blank=True, null=True)
@@ -164,11 +183,12 @@ class Records(models.Model):
 	#category = models.CharField(max_length=20, blank=True, verbose_name='Kategori')
 	archive = models.CharField(max_length=255, blank=True, verbose_name='Arkiv')
 	archive_id = models.CharField(max_length=255, blank=True)
-	type = models.CharField(max_length=20, verbose_name='Materialtyp', choices=[('arkiv', 'arkiv'), ('tryckt', 'tryckt'), ('register', 'register'), ('inspelning', 'inspelning'), ('matkarta', 'matkarta'), ('frågelista', 'frågelista')])
+	type = models.CharField(max_length=20, verbose_name='Materialtyp', choices=type_choices)
 	archive_page = models.CharField(max_length=20, blank=True, null=True)
 	source = models.TextField(blank=True, verbose_name='Källa')
 	comment = models.TextField(blank=True)
-	country = models.CharField(max_length=255, blank=False, null=False, default='sweden', choices=[('sweden', 'Sverige'), ('norway', 'Norge')])
+	country = models.CharField(max_length=20, blank=False, null=False, default='sweden', choices=country_choices)
+	language = models.CharField(max_length=20, blank=False, null=False, default='swedish', choices=language_choices)
 	changedate = models.DateTimeField(auto_now_add=True, blank=True)
 	person_objects = models.ManyToManyField(
 		Persons, 
@@ -195,8 +215,8 @@ class Records(models.Model):
 	class Meta:
 		managed = False
 		db_table = 'records'
-		verbose_name = 'Sägen'
-		verbose_name_plural = 'Sägner'
+		verbose_name = 'Text'
+		verbose_name_plural = 'Textar'
 		permissions = (
 			('view_records', 'Kan visa postar'),
 		)
@@ -239,7 +259,7 @@ class RecordsPersons(models.Model):
 class RecordsPlaces(models.Model):
 	record = models.ForeignKey(Records, db_column='record')
 	place = models.ForeignKey(Socken, db_column='place')
-	type = models.CharField(max_length=20, blank=True, null=True, choices=[('place_collected', 'Insamlingsort'), ('place_mentioned', 'Nämns i texten')])
+	type = models.CharField(max_length=20, blank=True, null=True, default='place_collected', choices=[('place_collected', 'Insamlingsort'), ('place_mentioned', 'Nämns i texten')])
 
 	class Meta:
 		managed = False
@@ -275,10 +295,12 @@ def model_m2m_changed(sender, **kwargs):
 	print(es_config.restApiRecordUrl+str(kwargs['instance'].id))
 	print(modelJson.json())
 
-def model_post_saved(sender, **kwargs):
+
+# Spara/uppdatera modell JSON i Elasticsearch
+def records_post_saved(sender, **kwargs):
 	def save_es_model():
 		modelId = kwargs['instance'].id
-		print('model_post_saved')
+		print('records_post_saved')
 
 		modelResponseData = requests.get(es_config.restApiRecordUrl+str(modelId), verify=False)
 		modelResponseData.encoding = 'utf-8'
@@ -290,14 +312,34 @@ def model_post_saved(sender, **kwargs):
 
 		esResponse = requests.post('https://'+es_config.user+':'+es_config.password+'@'+es_config.host+'/'+es_config.index_name+'/legend/'+str(modelId)+'/_update', data=json.dumps(document).encode('utf-8'), verify=False)
 
-		print(esResponse.json())
 		if 'status' in esResponse.json() and esResponse.json()['status'] == 404:
 			esResponse = requests.put('https://'+es_config.user+':'+es_config.password+'@'+es_config.host+'/'+es_config.index_name+'/legend/'+str(modelId), data=json.dumps(modelJson).encode('utf-8'), verify=False)
-
-		print(esResponse.json())
 
 	t = Timer(5, save_es_model)
 	t.start()
 
 
-post_save.connect(model_post_saved, sender=Records)
+# Radera model JSON från Elasticsearch
+def model_post_delete(sender, **kwargs):
+	modelId = kwargs['instance'].id
+
+	esResponse = requests.delete('https://'+es_config.user+':'+es_config.password+'@'+es_config.host+'/'+es_config.index_name+'/legend/'+str(modelId), verify=False)
+
+
+# Spara/uppdatera modell JSON i Elasticsearch
+def person_post_saved(sender, **kwargs):
+	def save_es_model():
+		modelId = kwargs['instance'].id
+
+		print('person_post_saved')
+		print(modelId)
+
+	t = Timer(5, save_es_model)
+	t.start()
+
+
+post_save.connect(records_post_saved, sender=Records)
+m2m_changed.connect(records_post_saved, sender=Records)
+post_delete.connect(model_post_delete, sender=Records)
+
+post_save.connect(person_post_saved, sender=Persons)
