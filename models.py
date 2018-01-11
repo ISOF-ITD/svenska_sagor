@@ -137,7 +137,7 @@ class Persons(models.Model):
 	image_tag.allow_tags = True
 
 	def __str__(self):
-		return self.name+' ('+str(self.birth_year)+')'
+		return self.name+' ['+self.id+'] ('+str(self.birth_year)+')'
 
 	class Meta:
 		managed = False
