@@ -93,7 +93,7 @@ class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	formfield_overrides = {}
 	readonly_fields = ['id']
 	actions  = [force_update]
-	fields = ['title', ('type'), ('archive', 'year'), ('archive_page', 'archive_id'), 'text', 'source', 'comment', ('country', 'language')]
+	fields = ['title', ('type'), ('archive', 'year'), ('archive_page', 'total_pages', 'archive_id'), 'text', 'source', 'comment', ('country', 'language')]
 
 	def save_model(self, request, obj, form, change):
 		if request.user.groups.filter(name='Norge').exists():
