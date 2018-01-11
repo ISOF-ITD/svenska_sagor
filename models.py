@@ -164,7 +164,8 @@ class Records(models.Model):
 		('inspelning', 'inspelning'), 
 		('matkarta', 'matkarta'), 
 		('frågelista', 'frågelista'),
-		('accessionsregister', 'accessionsregister')
+		('accessionsregister', 'accessionsregister'),
+		('brev', 'brev')
 	]
 
 	country_choices = [
@@ -180,7 +181,7 @@ class Records(models.Model):
 	id = models.CharField(primary_key=True, max_length=20)
 	title = models.CharField(max_length=255, verbose_name='Titel')
 	text = models.TextField(blank=True, null=True)
-	year = models.IntegerField(blank=True, null=True)
+	year = models.DateField(blank=True, null=True)
 	#category = models.ForeignKey(Categories, db_column='category')
 	#category = models.CharField(max_length=20, blank=True, verbose_name='Kategori')
 	archive = models.CharField(max_length=255, blank=True, verbose_name='Arkiv')
@@ -262,7 +263,7 @@ class RecordsPersons(models.Model):
 class RecordsPlaces(models.Model):
 	record = models.ForeignKey(Records, db_column='record')
 	place = models.ForeignKey(Socken, db_column='place')
-	type = models.CharField(max_length=20, blank=True, null=True, default='place_collected', choices=[('place_collected', 'Insamlingsort'), ('place_mentioned', 'Nämns i texten')])
+	type = models.CharField(max_length=20, blank=True, null=True, default='place_collected', choices=[('place_collected', 'Insamlingsort'), ('place_mentioned', 'Nämns i texten'), ('dispatch_place', 'Avsändningsort'), ('destination_place', 'Destination')])
 
 	class Meta:
 		managed = False
