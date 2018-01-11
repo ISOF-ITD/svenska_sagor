@@ -253,7 +253,7 @@ class RecordsMedia(models.Model):
 class RecordsPersons(models.Model):
 	record = models.ForeignKey(Records, db_column='record')
 	person = models.ForeignKey(Persons, db_column='person')
-	relation = models.CharField(max_length=5, blank=True, null=True, choices=[('i', 'Informant'), ('c', 'Uppteckare'), ('sender', 'Avsändare'), ('receiver', 'Mottagare')])
+	relation = models.CharField(max_length=20, blank=True, null=True, choices=[('i', 'Informant'), ('c', 'Uppteckare'), ('sender', 'Avsändare'), ('receiver', 'Mottagare')])
 
 	class Meta:
 		managed = False
