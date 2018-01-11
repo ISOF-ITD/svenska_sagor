@@ -187,6 +187,7 @@ class Records(models.Model):
 	archive_id = models.CharField(max_length=255, blank=True)
 	type = models.CharField(max_length=20, verbose_name='Materialtyp', choices=type_choices)
 	archive_page = models.CharField(max_length=20, blank=True, null=True)
+	total_pages = models.IntegerField(blank=True, null=True)
 	source = models.TextField(blank=True, verbose_name='Källa')
 	comment = models.TextField(blank=True)
 	country = models.CharField(max_length=20, blank=False, null=False, default='sweden', choices=country_choices)
