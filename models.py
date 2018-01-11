@@ -163,7 +163,8 @@ class Records(models.Model):
 		('register', 'register'), 
 		('inspelning', 'inspelning'), 
 		('matkarta', 'matkarta'), 
-		('frågelista', 'frågelista')
+		('frågelista', 'frågelista'),
+		('accessionsregister', 'accessionsregister')
 	]
 
 	country_choices = [
