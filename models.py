@@ -112,11 +112,11 @@ class CategoriesKlintberg(models.Model):
 class Persons(models.Model):
 	id = models.CharField(primary_key=True, max_length=20)
 	name = models.CharField(max_length=255)
-	gender = models.CharField(max_length=2, choices=[('k', 'Kvinna'), ('m', 'Man')])
+	gender = models.CharField(max_length=2, choices=[('k', 'Kvinna'), ('m', 'Man'), ('o', 'Okänd')])
 	birth_year = models.IntegerField(blank=True, null=True)
-	address = models.CharField(max_length=255)
-	biography = models.TextField()
-	image = models.ImageField(verbose_name='Bildfil')
+	address = models.CharField(blank=True, null=True, max_length=255)
+	biography = models.TextField(blank=True, null=True)
+	image = models.ImageField(blank=True, null=True, verbose_name='Bildfil')
 	changedate = models.DateTimeField()
 	places = models.ManyToManyField(
 		Socken, 
