@@ -91,7 +91,7 @@ class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	radio_fields = {}
 	prepopulated_fields = {}
 	formfield_overrides = {}
-	readonly_fields = ['id']
+	readonly_fields = []
 	actions  = [force_update]
 	fields = [('title', 'id'), ('type'), ('archive', 'year'), ('archive_page', 'total_pages', 'archive_id'), 'text', 'source', 'comment', ('country', 'language')]
 
@@ -257,7 +257,7 @@ class SockenAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	radio_fields = {}
 	prepopulated_fields = {}
 	formfield_overrides = {}
-	fields = ['name', 'harad', 'lat', 'lng', 'map_tag', 'id']
+	fields = ['name', 'harad', 'fylke', 'lat', 'lng', 'map_tag', 'id']
 	readonly_fields = ['id', 'map_tag']
 
 
