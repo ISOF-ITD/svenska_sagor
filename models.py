@@ -34,7 +34,8 @@ class Harad(models.Model):
 
 class Socken(models.Model):
 	name = models.CharField(max_length=200)
-	harad = models.ForeignKey(Harad, models.DO_NOTHING, db_column='harad')
+	harad = models.ForeignKey(Harad, models.DO_NOTHING, null=True, blank=True, db_column='harad')
+	fylke = models.CharField(max_length=50, blank=True, null=True)
 	lat = models.FloatField()
 	lng = models.FloatField()
 	#changedate = models.DateTimeField()
@@ -165,6 +166,7 @@ class Records(models.Model):
 		('matkarta', 'matkarta'), 
 		('frågelista', 'frågelista'),
 		('accessionsregister', 'accessionsregister'),
+		('webbfrågelista', 'webbfrågelista'),
 		('brev', 'brev')
 	]
 
@@ -188,7 +190,7 @@ class Records(models.Model):
 	archive_id = models.CharField(max_length=255, blank=True)
 	type = models.CharField(max_length=20, verbose_name='Materialtyp', choices=type_choices)
 	archive_page = models.CharField(max_length=20, blank=True, null=True)
-	total_pages = models.IntegerField(blank=True, null=True)
+	total_pages = models.IntegerField(default=1, blank=False, null=False)
 	source = models.TextField(blank=True, verbose_name='Källa')
 	comment = models.TextField(blank=True)
 	country = models.CharField(max_length=20, blank=False, null=False, default='sweden', choices=country_choices)
@@ -228,7 +230,7 @@ class Records(models.Model):
 
 class RecordsMetadata(models.Model):
 	record = models.ForeignKey(Records, db_column='record', related_name='metadata')
-	type = models.CharField(max_length=30, blank=True, null=True, choices=[('sitevision_url', 'Sitevision url'), ('filemaker_id', 'FileMaker ID')])
+	type = models.CharField(max_length=30, blank=True, null=True, choices=[('sitevision_url', 'Sitevision url'), ('filemaker_id', 'FileMaker ID'), ('questions', 'Frågor')])
 	value = models.TextField(blank=True, null=True)
 
 	def __str__(self):
