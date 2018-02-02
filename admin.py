@@ -43,7 +43,7 @@ class RecordsPlacesAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	readonly_fields = ['id']
 
 	def get_model_perms(self, request):
-		return {}        
+		return {}
 
 
 class RecordsPersonsInline(admin.TabularInline):
@@ -155,8 +155,7 @@ class PersonsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	radio_fields = {}
 	prepopulated_fields = {}
 	formfield_overrides = {}
-	readonly_fields = ['id']
-	readonly_fields = ['id', 'image_tag']
+	readonly_fields = ['image_tag']
 	fields = ['id', 'name', ('gender', 'birth_year'), 'address', 'biography', ('image', 'image_tag')]
 
 	def lookup_allowed(self, lookup, value):
@@ -168,7 +167,7 @@ class PersonsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 		qs = super(PersonsAdmin, self).get_queryset(request)
 		if request.user.groups.filter(name='Norge').exists():
 			inner_qs = Records.objects.filter(country='norway')
-			return qs.filter(record_objects__in=inner_qs)
+			return qs.filter(record_objects__in=inner_qs).distinct()
 		return qs
 
 
