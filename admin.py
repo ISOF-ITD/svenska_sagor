@@ -167,8 +167,8 @@ class PersonsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	def get_queryset(self, request):
 		qs = super(PersonsAdmin, self).get_queryset(request)
 		if request.user.groups.filter(name='Norge').exists():
-			inner_qs = Records.objects.filter(country='norway').distinct()
-			return qs.filter(record_objects__in=inner_qs)
+			inner_qs = Records.objects.filter(country='norway')
+			return qs.filter(record_objects__in=inner_qs).distinct()
 		return qs
 
 
