@@ -69,7 +69,7 @@ class Socken(models.Model):
 		map_html = template.substitute(values)
 
 		return mark_safe(map_html);
-	
+
 	map_tag.short_description = 'Karta'
 	map_tag.allow_tags = True
 
@@ -120,20 +120,20 @@ class Persons(models.Model):
 	image = models.ImageField(blank=True, null=True, verbose_name='Bildfil')
 	changedate = models.DateTimeField()
 	places = models.ManyToManyField(
-		Socken, 
-		through='PersonsPlaces', 
+		Socken,
+		through='PersonsPlaces',
 		through_fields = ('person', 'place')
 	)
 
 	record_objects = models.ManyToManyField(
-		'Records', 
-		through='RecordsPersons', 
+		'Records',
+		through='RecordsPersons',
 		verbose_name = 'Sägner'
 	)
 
 	def image_tag(self):
 		return mark_safe('<a href="http://www4.sprakochfolkminnen.se/Folkminnen/Svenska_sagor_filer/%s" target="_blank"><img src="http://www4.sprakochfolkminnen.se/Folkminnen/Svenska_sagor_filer/%s" style="max-width: 300px" /></a>' % (self.image, self.image))
-	
+
 	image_tag.short_description = 'Bild'
 	image_tag.allow_tags = True
 
@@ -159,11 +159,11 @@ class PersonsPlaces(models.Model):
 
 class Records(models.Model):
 	type_choices = [
-		('arkiv', 'arkiv'), 
-		('tryckt', 'tryckt'), 
-		('register', 'register'), 
-		('inspelning', 'inspelning'), 
-		('matkarta', 'matkarta'), 
+		('arkiv', 'arkiv'),
+		('tryckt', 'tryckt'),
+		('register', 'register'),
+		('inspelning', 'inspelning'),
+		('matkarta', 'matkarta'),
 		('frågelista', 'frågelista'),
 		('accessionsregister', 'accessionsregister'),
 		('webbfrågelista', 'webbfrågelista'),
@@ -171,12 +171,12 @@ class Records(models.Model):
 	]
 
 	country_choices = [
-		('sweden', 'Sverige'), 
+		('sweden', 'Sverige'),
 		('norway', 'Norge')
 	]
 
 	language_choices = [
-		('swedish', 'Svenska'), 
+		('swedish', 'Svenska'),
 		('norwegian', 'Norska')
 	]
 
@@ -197,20 +197,20 @@ class Records(models.Model):
 	language = models.CharField(max_length=20, blank=False, null=False, default='swedish', choices=language_choices)
 	changedate = models.DateTimeField(auto_now_add=True, blank=True)
 	person_objects = models.ManyToManyField(
-		Persons, 
-		through='RecordsPersons', 
+		Persons,
+		through='RecordsPersons',
 	#    through_fields = ('record', 'person'),
 		verbose_name = 'Personer'
 	)
 	places = models.ManyToManyField(
-		Socken, 
-		through = 'RecordsPlaces', 
+		Socken,
+		through = 'RecordsPlaces',
 	#    through_fields = ('record', 'place'),
 		verbose_name = 'Socken'
 	)
 	categories = models.ManyToManyField(
-		Categories, 
-		through = 'RecordsCategory', 
+		Categories,
+		through = 'RecordsCategory',
 	#    through_fields = ('record', 'place'),
 		verbose_name = 'Kategorier'
 	)
@@ -329,7 +329,10 @@ def records_post_saved(sender, **kwargs):
 def model_post_delete(sender, **kwargs):
 	modelId = kwargs['instance'].id
 
-	esResponse = requests.delete('https://'+es_config.user+':'+es_config.password+'@'+es_config.host+'/'+es_config.index_name+'/legend/'+str(modelId), verify=False)
+	try:
+		esResponse = requests.delete('https://'+es_config.user+':'+es_config.password+'@'+es_config.host+'/'+es_config.index_name+'/legend/'+str(modelId), verify=False)
+	except TypeError:
+		pass
 
 
 # Spara/uppdatera modell JSON i Elasticsearch

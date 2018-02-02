@@ -43,7 +43,7 @@ class RecordsPlacesAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	readonly_fields = ['id']
 
 	def get_model_perms(self, request):
-		return {}        
+		return {}
 
 
 class RecordsPersonsInline(admin.TabularInline):
@@ -167,7 +167,7 @@ class PersonsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	def get_queryset(self, request):
 		qs = super(PersonsAdmin, self).get_queryset(request)
 		if request.user.groups.filter(name='Norge').exists():
-			inner_qs = Records.objects.filter(country='norway')
+			inner_qs = Records.objects.filter(country='norway').distinct()
 			return qs.filter(record_objects__in=inner_qs)
 		return qs
 
