@@ -160,15 +160,16 @@ class PersonsPlaces(models.Model):
 
 class Records(models.Model):
 	type_choices = [
-		('arkiv', 'arkiv'),
-		('tryckt', 'tryckt'),
-		('register', 'register'),
-		('inspelning', 'inspelning'),
-		('matkarta', 'matkarta'),
-		('frågelista', 'frågelista'),
-		('accessionsregister', 'accessionsregister'),
-		('webbfrågelista', 'webbfrågelista'),
-		('brev', 'brev')
+		('arkiv', 'Arkiv'),
+		('tryckt', 'Tryckt'),
+		('register', 'Register'),
+		('inspelning', 'Inspelning'),
+		('matkarta', 'Matkarta'),
+		('frågelista', 'Frågelista'),
+		('accessionsregister', 'Accessionsregister'),
+		('webbfrågelista', 'Webbfrågelista'),
+		('brev', 'Brev'),
+		('folkmusik', 'Folkmusik'),
 	]
 
 	country_choices = [
