@@ -10,6 +10,7 @@ from django.utils.safestring import mark_safe
 from string import Template
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete, m2m_changed
+from django.utils.functional import lazy
 import requests, json
 from django.db import models
 from threading import Timer
@@ -228,9 +229,34 @@ class Records(models.Model):
 		)
 
 
+class MetadataTypes(models.Model):
+	type = models.CharField(max_length=255, blank=False, null=False)
+	label = models.CharField(max_length=500, blank=False, null=False)
+
+	class Meta:
+		managed = False
+		db_table = 'metadata_types'
+		verbose_name = 'Metadata typ'
+		verbose_name_plural = 'Metadata typer'
+
+
+def get_records_metadata_types():
+	metadataTypes = MetadataTypes.objects.order_by('label').all()
+
+
+	#types = [('sitevision_url', 'Sitevision url'), ('filemaker_id', 'FileMaker ID'), ('questions', 'Frågor'), ('fml', 'FML')]
+
+	def itemFormat(item):
+		return (item.type, item.label)
+
+	types = list(map(itemFormat, metadataTypes))
+
+	return types
+
+
 class RecordsMetadata(models.Model):
 	record = models.ForeignKey(Records, db_column='record', related_name='metadata')
-	type = models.CharField(max_length=30, blank=True, null=True, choices=[('sitevision_url', 'Sitevision url'), ('filemaker_id', 'FileMaker ID'), ('questions', 'Frågor')])
+	type = models.CharField(max_length=30, blank=True, null=True, choices=get_records_metadata_types())
 	value = models.TextField(blank=True, null=True)
 
 	def __str__(self):
