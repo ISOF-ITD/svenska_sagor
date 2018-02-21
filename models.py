@@ -244,13 +244,12 @@ class MetadataTypes(models.Model):
 def get_records_metadata_types():
 	metadataTypes = MetadataTypes.objects.order_by('label').all()
 
-
-	#types = [('sitevision_url', 'Sitevision url'), ('filemaker_id', 'FileMaker ID'), ('questions', 'Frågor'), ('fml', 'FML')]
-
 	def itemFormat(item):
 		return (item.type, item.label)
 
 	types = list(map(itemFormat, metadataTypes))
+
+	print('get_records_metadata_types')
 
 	return types
 

@@ -31,7 +31,7 @@ class CategoriesKlintbergAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 class RecordsPlacesAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	extra_list_display = []
 	extra_list_filter = []
-	extra_search_fields = []
+	extra_search_fields = ['id']
 	list_editable = []
 	raw_id_fields = []
 	inlines = []
@@ -48,11 +48,13 @@ class RecordsPlacesAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 
 class RecordsPersonsInline(admin.TabularInline):
 	model = Records.person_objects.through
+	raw_id_fields = ['person']
 	model._meta.verbose_name_plural = "Relaterade personer"
 
 
 class RecordsPlacesInline(admin.TabularInline):
 	model = Records.places.through
+	raw_id_fields = ['place']
 	model._meta.verbose_name_plural = "Platser"
 
 
@@ -89,6 +91,7 @@ class MetadataTypesAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	prepopulated_fields = {}
 	formfield_overrides = {}
 	fields = ['type', 'label']
+
 
 class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	list_display = ['id', 'title', 'archive', 'type', 'country']
@@ -187,7 +190,7 @@ class PersonsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 class RecordsPersonsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	extra_list_display = []
 	extra_list_filter = []
-	extra_search_fields = []
+	extra_search_fields = ['id']
 	list_editable = []
 	raw_id_fields = []
 	inlines = []
