@@ -112,7 +112,7 @@ class CategoriesKlintberg(models.Model):
 
 
 class Persons(models.Model):
-	id = models.CharField(primary_key=True, max_length=20)
+	id = models.CharField(primary_key=True, max_length=30)
 	name = models.CharField(max_length=255)
 	gender = models.CharField(max_length=2, choices=[('k', 'Kvinna'), ('m', 'Man'), ('o', 'Okänd')])
 	birth_year = models.IntegerField(blank=True, null=True)
@@ -182,7 +182,7 @@ class Records(models.Model):
 		('norwegian', 'Norska')
 	]
 
-	id = models.CharField(primary_key=True, max_length=20)
+	id = models.CharField(primary_key=True, max_length=30)
 	title = models.CharField(max_length=255, verbose_name='Titel')
 	text = models.TextField(blank=True, null=True)
 	year = models.DateField(blank=True, null=True)
