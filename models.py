@@ -10,6 +10,7 @@ from django.utils.safestring import mark_safe
 from string import Template
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete, m2m_changed
+from django.utils.functional import lazy
 import requests, json
 from django.db import models
 from threading import Timer
@@ -111,7 +112,7 @@ class CategoriesKlintberg(models.Model):
 
 
 class Persons(models.Model):
-	id = models.CharField(primary_key=True, max_length=20)
+	id = models.CharField(primary_key=True, max_length=30)
 	name = models.CharField(max_length=255)
 	gender = models.CharField(max_length=2, choices=[('k', 'Kvinna'), ('m', 'Man'), ('o', 'Okänd')])
 	birth_year = models.IntegerField(blank=True, null=True)
@@ -159,15 +160,16 @@ class PersonsPlaces(models.Model):
 
 class Records(models.Model):
 	type_choices = [
-		('arkiv', 'arkiv'),
-		('tryckt', 'tryckt'),
-		('register', 'register'),
-		('inspelning', 'inspelning'),
-		('matkarta', 'matkarta'),
-		('frågelista', 'frågelista'),
-		('accessionsregister', 'accessionsregister'),
-		('webbfrågelista', 'webbfrågelista'),
-		('brev', 'brev')
+		('arkiv', 'Arkiv'),
+		('tryckt', 'Tryckt'),
+		('register', 'Register'),
+		('inspelning', 'Inspelning'),
+		('matkarta', 'Matkarta'),
+		('frågelista', 'Frågelista'),
+		('accessionsregister', 'Accessionsregister'),
+		('webbfrågelista', 'Webbfrågelista'),
+		('brev', 'Brev'),
+		('folkmusik', 'Folkmusik'),
 	]
 
 	country_choices = [
@@ -180,7 +182,7 @@ class Records(models.Model):
 		('norwegian', 'Norska')
 	]
 
-	id = models.CharField(primary_key=True, max_length=20)
+	id = models.CharField(primary_key=True, max_length=30)
 	title = models.CharField(max_length=255, verbose_name='Titel')
 	text = models.TextField(blank=True, null=True)
 	year = models.DateField(blank=True, null=True)
@@ -228,9 +230,33 @@ class Records(models.Model):
 		)
 
 
+class MetadataTypes(models.Model):
+	type = models.CharField(max_length=255, blank=False, null=False)
+	label = models.CharField(max_length=500, blank=False, null=False)
+
+	class Meta:
+		managed = False
+		db_table = 'metadata_types'
+		verbose_name = 'Metadata typ'
+		verbose_name_plural = 'Metadata typer'
+
+
+def get_records_metadata_types():
+	metadataTypes = MetadataTypes.objects.order_by('label').all()
+
+	def itemFormat(item):
+		return (item.type, item.label)
+
+	types = list(map(itemFormat, metadataTypes))
+
+	print('get_records_metadata_types')
+
+	return types
+
+
 class RecordsMetadata(models.Model):
 	record = models.ForeignKey(Records, db_column='record', related_name='metadata')
-	type = models.CharField(max_length=30, blank=True, null=True, choices=[('sitevision_url', 'Sitevision url'), ('filemaker_id', 'FileMaker ID'), ('questions', 'Frågor')])
+	type = models.CharField(max_length=30, blank=True, null=True, choices=get_records_metadata_types())
 	value = models.TextField(blank=True, null=True)
 
 	def __str__(self):
@@ -255,7 +281,7 @@ class RecordsMedia(models.Model):
 class RecordsPersons(models.Model):
 	record = models.ForeignKey(Records, db_column='record')
 	person = models.ForeignKey(Persons, db_column='person')
-	relation = models.CharField(max_length=20, blank=True, null=True, choices=[('i', 'Informant'), ('c', 'Uppteckare'), ('sender', 'Avsändare'), ('receiver', 'Mottagare')])
+	relation = models.CharField(max_length=20, blank=True, null=True, choices=[('i', 'Informant'), ('c', 'Uppteckare'), ('sender', 'Avsändare'), ('receiver', 'Mottagare'), ('recorder', 'Intervjuare')])
 
 	class Meta:
 		managed = False

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CategoriesKlintberg, RecordsPlaces, Records, RecordsCategory, Persons, RecordsPersons, PersonsPlaces, SockenV1, RecordsMedia, Socken, Categories, Harad, RecordsMetadata
+from .models import CategoriesKlintberg, RecordsPlaces, Records, MetadataTypes, RecordsCategory, Persons, RecordsPersons, PersonsPlaces, SockenV1, RecordsMedia, Socken, Categories, Harad, RecordsMetadata
 from django_baker.admin import ExtendedModelAdminMixin
 from .filters import DropdownFilter, RelatedDropdownFilter
 from django.contrib.auth.models import User
@@ -31,7 +31,7 @@ class CategoriesKlintbergAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 class RecordsPlacesAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	extra_list_display = []
 	extra_list_filter = []
-	extra_search_fields = []
+	extra_search_fields = ['id']
 	list_editable = []
 	raw_id_fields = []
 	inlines = []
@@ -48,11 +48,13 @@ class RecordsPlacesAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 
 class RecordsPersonsInline(admin.TabularInline):
 	model = Records.person_objects.through
+	raw_id_fields = ['person']
 	model._meta.verbose_name_plural = "Relaterade personer"
 
 
 class RecordsPlacesInline(admin.TabularInline):
 	model = Records.places.through
+	raw_id_fields = ['place']
 	model._meta.verbose_name_plural = "Platser"
 
 
@@ -76,6 +78,20 @@ def force_update(modeladmin, request, queryset):
 		time.sleep(0.5)
 
 force_update.short_description = 'Force update'
+
+class MetadataTypesAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
+	list_display = ['id', 'type', 'label']
+	extra_list_display = []
+	extra_search_fields = []
+	list_editable = []
+	raw_id_fields = []
+	filter_vertical = []
+	filter_horizontal = []
+	radio_fields = {}
+	prepopulated_fields = {}
+	formfield_overrides = {}
+	fields = ['type', 'label']
+
 
 class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	list_display = ['id', 'title', 'archive', 'type', 'country']
@@ -174,7 +190,7 @@ class PersonsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 class RecordsPersonsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	extra_list_display = []
 	extra_list_filter = []
-	extra_search_fields = []
+	extra_search_fields = ['id']
 	list_editable = []
 	raw_id_fields = []
 	inlines = []
@@ -317,6 +333,7 @@ admin.site.register(RecordsMedia, RecordsMediaAdmin)
 admin.site.register(Socken, SockenAdmin)
 admin.site.register(Categories, CategoriesAdmin)
 admin.site.register(Harad, HaradAdmin)
+admin.site.register(MetadataTypes, MetadataTypesAdmin)
 
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
