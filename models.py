@@ -118,7 +118,7 @@ class Persons(models.Model):
 	birth_year = models.IntegerField(blank=True, null=True)
 	address = models.CharField(blank=True, null=True, max_length=255)
 	biography = models.TextField(blank=True, null=True)
-	image = models.ImageField(blank=True, null=True, verbose_name='Bildfil')
+	image = models.ImageField(blank=True, null=True, verbose_name='Bildfil', upload_to='personer')
 	changedate = models.DateTimeField()
 	places = models.ManyToManyField(
 		Socken,
@@ -133,7 +133,7 @@ class Persons(models.Model):
 	)
 
 	def image_tag(self):
-		return mark_safe('<a href="http://www4.sprakochfolkminnen.se/Folkminnen/Svenska_sagor_filer/%s" target="_blank"><img src="http://www4.sprakochfolkminnen.se/Folkminnen/Svenska_sagor_filer/%s" style="max-width: 300px" /></a>' % (self.image, self.image))
+		return mark_safe('<a href="/media/%s" target="_blank"><img src="/media/%s" style="max-width: 300px" /></a>' % (self.image, self.image))
 
 	image_tag.short_description = 'Bild'
 	image_tag.allow_tags = True
