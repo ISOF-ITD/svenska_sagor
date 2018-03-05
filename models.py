@@ -133,7 +133,7 @@ class Persons(models.Model):
 	)
 
 	def image_tag(self):
-		return mark_safe('<a href="/media/%s" target="_blank"><img src="media/%s" style="max-width: 300px" /></a>' % (self.image, self.image))
+		return mark_safe('<a href="/media/%s" target="_blank"><img src="/media/%s" style="max-width: 300px" /></a>' % (self.image, self.image))
 
 	image_tag.short_description = 'Bild'
 	image_tag.allow_tags = True
