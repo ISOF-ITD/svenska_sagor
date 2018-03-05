@@ -65,7 +65,8 @@ class RecordsMediaInline(admin.TabularInline):
 
 class RecordsCategoriesInline(admin.TabularInline):
 	model = RecordsCategory
-	model._meta.verbose_name_plural = "Filer"
+	raw_id_fields = ['category']
+	model._meta.verbose_name_plural = "Kategorier"
 
 
 class RecordsMetadataInline(admin.TabularInline):
