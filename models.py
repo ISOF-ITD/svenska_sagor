@@ -118,7 +118,7 @@ class Persons(models.Model):
 	birth_year = models.IntegerField(blank=True, null=True)
 	address = models.CharField(blank=True, null=True, max_length=255)
 	biography = models.TextField(blank=True, null=True)
-	image = models.ImageField(blank=True, null=True, verbose_name='Bildfil')
+	image = models.ImageField(blank=True, null=True, verbose_name='Bildfil', upload_to='personer')
 	changedate = models.DateTimeField()
 	places = models.ManyToManyField(
 		Socken,
