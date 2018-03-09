@@ -342,7 +342,7 @@ def records_post_saved(sender, **kwargs):
 			'doc': modelJson
 		}
 
-		esResponse = requests.post('https://'+es_config.user+':'+es_config.password+'@'+es_config.host+'/'+es_config.index_name+'/legend/'+str(modelId)+'/_update', data=json.dumps(document).encode('utf-8'), verify=False)
+		esResponse = requests.post(es_config.protocol+(es_config.user+':'+es_config.password+'@' if hasattr(es_config, 'user') else '')+es_config.host+'/'+es_config.index_name+'/legend/'+str(modelId)+'/_update', data=json.dumps(document).encode('utf-8'), verify=False)
 
 		if 'status' in esResponse.json() and esResponse.json()['status'] == 404:
 			esResponse = requests.put('https://'+es_config.user+':'+es_config.password+'@'+es_config.host+'/'+es_config.index_name+'/legend/'+str(modelId), data=json.dumps(modelJson).encode('utf-8'), verify=False)
@@ -356,7 +356,7 @@ def model_post_delete(sender, **kwargs):
 	modelId = kwargs['instance'].id
 
 	try:
-		esResponse = requests.delete('https://'+es_config.user+':'+es_config.password+'@'+es_config.host+'/'+es_config.index_name+'/legend/'+str(modelId), verify=False)
+		esResponse = requests.delete(es_config.protocol+(es_config.user+':'+es_config.password+'@' if hasattr(es_config, 'user') else '')+es_config.host+'/'+es_config.index_name+'/legend/'+str(modelId), verify=False)
 	except TypeError:
 		pass
 
