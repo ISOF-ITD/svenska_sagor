@@ -345,7 +345,7 @@ def records_post_saved(sender, **kwargs):
 		esResponse = requests.post(es_config.protocol+(es_config.user+':'+es_config.password+'@' if hasattr(es_config, 'user') else '')+es_config.host+'/'+es_config.index_name+'/legend/'+str(modelId)+'/_update', data=json.dumps(document).encode('utf-8'), verify=False)
 
 		if 'status' in esResponse.json() and esResponse.json()['status'] == 404:
-			esResponse = requests.put('https://'+es_config.user+':'+es_config.password+'@'+es_config.host+'/'+es_config.index_name+'/legend/'+str(modelId), data=json.dumps(modelJson).encode('utf-8'), verify=False)
+			esResponse = requests.put(es_config.protocol+(es_config.user+':'+es_config.password+'@' if hasattr(es_config, 'user') else '')+es_config.host+'/'+es_config.index_name+'/legend/'+str(modelId), data=json.dumps(modelJson).encode('utf-8'), verify=False)
 
 	t = Timer(5, save_es_model)
 	t.start()
