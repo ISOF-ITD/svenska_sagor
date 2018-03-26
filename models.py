@@ -271,7 +271,7 @@ class RecordsMedia(models.Model):
 	record = models.ForeignKey(Records, db_column='record', related_name='media')
 	type = models.CharField(max_length=30, blank=True, null=True, choices=[('image', 'Bildfil'), ('pdf', 'Pdf'), ('audio', 'Ljudfil')])
 	source = models.CharField(max_length=255, blank=True, null=True)
-	title = models.Text(blank=True, null=True)
+	title = models.TextField(blank=True, null=True)
 
 	class Meta:
 		managed = False
