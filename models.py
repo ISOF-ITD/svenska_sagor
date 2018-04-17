@@ -373,8 +373,8 @@ def person_post_saved(sender, **kwargs):
 	t.start()
 
 
-post_save.connect(records_post_saved, sender=Records)
-m2m_changed.connect(records_post_saved, sender=Records)
-post_delete.connect(model_post_delete, sender=Records)
+#post_save.connect(records_post_saved, sender=Records)
+#m2m_changed.connect(records_post_saved, sender=Records)
+#post_delete.connect(model_post_delete, sender=Records)
 
-post_save.connect(person_post_saved, sender=Persons)
+#post_save.connect(person_post_saved, sender=Persons)
