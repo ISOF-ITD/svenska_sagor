@@ -260,7 +260,7 @@ class RecordsMetadata(models.Model):
 	value = models.TextField(blank=True, null=True)
 
 	def __str__(self):
-		return self.type+': '+self.value if self.type else ''
+		return self.type+': '+self.value if self.type and self.value else ''
 
 	class Meta:
 		managed = False
