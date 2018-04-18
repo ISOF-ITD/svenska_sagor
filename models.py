@@ -87,7 +87,7 @@ class Categories(models.Model):
 	id = models.CharField(primary_key=True, max_length=10)
 	name = models.CharField(max_length=255)
 	name_en = models.CharField(max_length=255, null=True, blank=True)
-	type = models.CharField(max_length=255, choices=[('sägner', 'Sägner'), ('frågelista', 'Frågelista'), ('webbfrågelista', 'Webbfrågelista'), ('matkarta', 'Matkarta')])
+	type = models.CharField(max_length=255, choices=[('sägner', 'Sägner'), ('frågelista', 'Frågelista'), ('webbfrågelista', 'Webbfrågelista'), ('matkarta', 'Matkarta'), ('digitalt-kulturarv', 'Digitalt kulturarv')])
 
 	def __str__(self):
 		return str(self.name)+' ('+self.id+') ['+self.type+']'
