@@ -183,7 +183,7 @@ class Records(models.Model):
 		('norwegian', 'Norska')
 	]
 
-	id = models.CharField(primary_key=True, max_length=30)
+	id = models.CharField(primary_key=True, max_length=50)
 	title = models.CharField(max_length=255, verbose_name='Titel')
 	text = models.TextField(blank=True, null=True)
 	year = models.DateField(blank=True, null=True)
