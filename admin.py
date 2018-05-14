@@ -97,8 +97,7 @@ class MetadataTypesAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	list_display = ['id', 'title', 'archive', 'type', 'country']
 	extra_list_display = []
-	list_filter = (('places', DropdownFilter))
-	extra_list_filter = ['type', ('archive', DropdownFilter), ('categories', RelatedDropdownFilter), ('places', RelatedDropdownFilter), 'country', 'language']
+	extra_list_filter = ['type', ('archive', DropdownFilter), ('categories', RelatedDropdownFilter), ('places', RelatedDropdownFilter), ('places__harad__landskap', DropdownFilter), 'country', 'language']
 	extra_search_fields = []
 	list_editable = ['title', 'archive', 'type']
 	raw_id_fields = ['person_objects']
@@ -111,6 +110,11 @@ class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	readonly_fields = []
 	actions  = [force_update]
 	fields = [('title', 'id'), ('type'), ('archive', 'year'), ('archive_page', 'total_pages', 'archive_id'), 'text', 'source', 'comment', ('country', 'language')]
+
+	def lookup_allowed(self, lookup, value):
+		if lookup == 'places__harad__landskap':
+			return True
+		return super(PersonsAdmin, self).lookup_allowed(lookup, value)
 
 	def save_model(self, request, obj, form, change):
 		if request.user.groups.filter(name='Norge').exists():
