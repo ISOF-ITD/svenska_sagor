@@ -174,7 +174,8 @@ class Records(models.Model):
 
 	country_choices = [
 		('sweden', 'Sverige'),
-		('norway', 'Norge')
+		('norway', 'Norge'),
+		('none', 'Inget')
 	]
 
 	language_choices = [
