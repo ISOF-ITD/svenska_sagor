@@ -112,6 +112,11 @@ class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	actions  = [force_update]
 	fields = [('title', 'id'), ('type'), ('archive', 'year'), ('archive_page', 'total_pages', 'archive_id'), 'text', 'source', 'comment', ('country', 'language')]
 
+	def lookup_allowed(self, lookup, value):
+		if lookup == 'places__harad__landskap':
+			return True
+		return super(PersonsAdmin, self).lookup_allowed(lookup, value)
+
 	def save_model(self, request, obj, form, change):
 		if request.user.groups.filter(name='Norge').exists():
 			obj.country = 'norway'
