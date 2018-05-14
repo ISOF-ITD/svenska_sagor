@@ -114,7 +114,7 @@ class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	def lookup_allowed(self, lookup, value):
 		if lookup == 'places__harad__landskap':
 			return True
-		return super(PersonsAdmin, self).lookup_allowed(lookup, value)
+		return super(RecordsAdmin, self).lookup_allowed(lookup, value)
 
 	def save_model(self, request, obj, form, change):
 		if request.user.groups.filter(name='Norge').exists():
