@@ -97,8 +97,7 @@ class MetadataTypesAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	list_display = ['id', 'title', 'archive', 'type', 'country']
 	extra_list_display = []
-#    list_filter = (('places', DropdownFilter),)
-	extra_list_filter = ['type', ('archive', DropdownFilter), ('categories', RelatedDropdownFilter), ('places', RelatedDropdownFilter), 'country', 'language']
+	extra_list_filter = ['type', ('archive', DropdownFilter), ('categories', RelatedDropdownFilter), ('places', RelatedDropdownFilter), ('places__harad__landskap', DropdownFilter), 'country', 'language']
 	extra_search_fields = []
 	list_editable = ['title', 'archive', 'type']
 	raw_id_fields = ['person_objects']
