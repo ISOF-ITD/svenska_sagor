@@ -114,7 +114,7 @@ class CategoriesKlintberg(models.Model):
 class Persons(models.Model):
 	id = models.CharField(primary_key=True, max_length=30)
 	name = models.CharField(max_length=255)
-	gender = models.CharField(max_length=2, choices=[('k', 'Kvinna'), ('m', 'Man'), ('o', 'Okänd')])
+	gender = models.CharField(max_length=2, choices=[('female', 'Kvinna'), ('male', 'Man'), ('unknown', 'Okänd')])
 	birth_year = models.IntegerField(blank=True, null=True)
 	address = models.CharField(blank=True, null=True, max_length=255)
 	biography = models.TextField(blank=True, null=True)
