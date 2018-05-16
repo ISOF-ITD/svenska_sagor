@@ -224,8 +224,8 @@ class Records(models.Model):
 	class Meta:
 		managed = False
 		db_table = 'records'
-		verbose_name = 'Text'
-		verbose_name_plural = 'Textar'
+		verbose_name = 'Uppteckning/inspelning'
+		verbose_name_plural = 'Uppteckningar och inspelningar'
 		permissions = (
 			('view_records', 'Kan visa postar'),
 		)
