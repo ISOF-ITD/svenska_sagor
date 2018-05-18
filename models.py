@@ -290,9 +290,17 @@ class RecordsPersons(models.Model):
 		unique_together = (('record', 'person'),)
 
 class RecordsPlaces(models.Model):
+	relation_type_choices = [
+		('place_collected', 'Insamlingsort'), 
+		('place_mentioned', 'Nämns i texten'), 
+		('related_person_place', 'Födelseort/hemort'), 
+		('dispatch_place', 'Avsändningsort'), 
+		('destination_place', 'Destination')
+	]
+
 	record = models.ForeignKey(Records, db_column='record')
 	place = models.ForeignKey(Socken, db_column='place')
-	type = models.CharField(max_length=20, blank=True, null=True, default='place_collected', choices=[('place_collected', 'Insamlingsort'), ('place_mentioned', 'Nämns i texten'), ('dispatch_place', 'Avsändningsort'), ('destination_place', 'Destination')])
+	type = models.CharField(max_length=20, blank=True, null=True, default='place_collected', choices=relation_type_choices)
 
 	class Meta:
 		managed = False
