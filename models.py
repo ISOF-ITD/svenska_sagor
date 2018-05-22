@@ -190,7 +190,7 @@ class Records(models.Model):
 	#category = models.ForeignKey(Categories, db_column='category')
 	#category = models.CharField(max_length=20, blank=True, verbose_name='Kategori')
 	archive = models.CharField(max_length=255, blank=True, verbose_name='Arkiv')
-	archive_id = models.CharField(max_length=255, blank=True)
+	archive_id = models.CharField(max_length=1000, blank=True)
 	type = models.CharField(max_length=20, verbose_name='Materialtyp', choices=type_choices)
 	archive_page = models.CharField(max_length=20, blank=True, null=True)
 	total_pages = models.IntegerField(default=1, blank=False, null=False)
