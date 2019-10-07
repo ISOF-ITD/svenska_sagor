@@ -1,3 +1,4 @@
+# coding=UTF-8
 # This is an auto-generated Django model module.
 # You'll have to do the following manually to clean this up:
 #   * Rearrange models' order
@@ -35,7 +36,7 @@ class Harad(models.Model):
 
 class Socken(models.Model):
 	name = models.CharField(max_length=200)
-	harad = models.ForeignKey(Harad, models.DO_NOTHING, null=True, blank=True, db_column='harad')
+	harad = models.ForeignKey(Harad, null=True, blank=True, db_column='harad', on_delete=models.PROTECT)
 	fylke = models.CharField(max_length=50, blank=True, null=True)
 	lat = models.FloatField()
 	lng = models.FloatField()
@@ -149,8 +150,8 @@ class Persons(models.Model):
 
 
 class PersonsPlaces(models.Model):
-	person = models.ForeignKey(Persons, db_column='person')
-	place = models.ForeignKey(Socken, db_column='place')
+	person = models.ForeignKey(Persons, db_column='person', on_delete=models.PROTECT)
+	place = models.ForeignKey(Socken, db_column='place', on_delete=models.PROTECT)
 	relation = models.CharField(max_length=5, blank=True, null=True, choices=[('birth', 'birth'), ('home', 'home')])
 
 	class Meta:
@@ -226,9 +227,9 @@ class Records(models.Model):
 		db_table = 'records'
 		verbose_name = 'Uppteckning/inspelning'
 		verbose_name_plural = 'Uppteckningar och inspelningar'
-		permissions = (
-			('view_records', 'Kan visa postar'),
-		)
+		#permissions = (
+		#	('view_records', 'Kan visa postar'),
+		#)
 
 
 class TranscribedRecords(models.Model):
@@ -268,7 +269,7 @@ class TranscribedRecords(models.Model):
 	categories = models.ManyToManyField(
 		Categories,
 		through='TranscribedRecordsCategory',
-		#    through_fields = ('record', 'category'),
+		    through_fields = ('record', 'category'),
 		verbose_name='Kategorier'
 	)
 	class Meta:
@@ -300,7 +301,7 @@ def get_records_metadata_types():
 
 
 class RecordsMetadata(models.Model):
-	record = models.ForeignKey(Records, db_column='record', related_name='metadata')
+	record = models.ForeignKey(Records, db_column='record', related_name='metadata', on_delete=models.PROTECT)
 	type = models.CharField(max_length=30, blank=True, null=True, choices=get_records_metadata_types())
 	value = models.TextField(blank=True, null=True)
 
@@ -313,7 +314,7 @@ class RecordsMetadata(models.Model):
 
 
 class RecordsMedia(models.Model):
-	record = models.ForeignKey(Records, db_column='record', related_name='media')
+	record = models.ForeignKey(Records, db_column='record', related_name='media', on_delete=models.PROTECT)
 	type = models.CharField(max_length=30, blank=True, null=True, choices=[('image', 'Bildfil'), ('pdf', 'Pdf'), ('audio', 'Ljudfil')])
 	source = models.CharField(max_length=255, blank=True, null=True)
 	title = models.TextField(blank=True, null=True)
@@ -324,8 +325,8 @@ class RecordsMedia(models.Model):
 
 
 class RecordsPersons(models.Model):
-	record = models.ForeignKey(Records, db_column='record')
-	person = models.ForeignKey(Persons, db_column='person')
+	record = models.ForeignKey(Records, db_column='record', on_delete=models.PROTECT)
+	person = models.ForeignKey(Persons, db_column='person', on_delete=models.PROTECT)
 	relation = models.CharField(max_length=20, blank=True, null=True, choices=[('i', 'Informant'), ('c', 'Uppteckare'), ('sender', 'Avsändare'), ('receiver', 'Mottagare'), ('recorder', 'Intervjuare')])
 
 	class Meta:
@@ -334,8 +335,8 @@ class RecordsPersons(models.Model):
 		unique_together = (('record', 'person'),)
 
 class TranscribedRecordsPersons(models.Model):
-	record = models.ForeignKey(TranscribedRecords, db_column='record')
-	person = models.ForeignKey(Persons, db_column='person')
+	record = models.ForeignKey(TranscribedRecords, db_column='record', on_delete=models.PROTECT)
+	person = models.ForeignKey(Persons, db_column='person', on_delete=models.PROTECT)
 	relation = models.CharField(max_length=20, blank=True, null=True, choices=[('i', 'Informant'), ('c', 'Uppteckare'), ('sender', 'Avsändare'), ('receiver', 'Mottagare'), ('recorder', 'Intervjuare')])
 
 	class Meta:
@@ -353,8 +354,8 @@ class RecordsPlaces(models.Model):
 		('destination_place', 'Destination')
 	]
 
-	record = models.ForeignKey(Records, db_column='record')
-	place = models.ForeignKey(Socken, db_column='place')
+	record = models.ForeignKey(Records, db_column='record', on_delete=models.PROTECT)
+	place = models.ForeignKey(Socken, db_column='place', on_delete=models.PROTECT)
 	type = models.CharField(max_length=20, blank=True, null=True, default='place_collected', choices=relation_type_choices)
 
 	class Meta:
@@ -371,8 +372,8 @@ class TranscribedRecordsPlaces(models.Model):
 		('destination_place', 'Destination')
 	]
 
-	record = models.ForeignKey(TranscribedRecords, db_column='record')
-	place = models.ForeignKey(Socken, db_column='place')
+	record = models.ForeignKey(TranscribedRecords, db_column='record', on_delete=models.PROTECT)
+	place = models.ForeignKey(Socken, db_column='place', on_delete=models.PROTECT)
 	type = models.CharField(max_length=20, blank=True, null=True, default='place_collected', choices=relation_type_choices)
 
 	class Meta:
@@ -381,16 +382,16 @@ class TranscribedRecordsPlaces(models.Model):
 
 
 class RecordsCategory(models.Model):
-	record = models.ForeignKey(Records, db_column='record')
-	category = models.ForeignKey(Categories, db_column='category')
+	record = models.ForeignKey(Records, db_column='record', on_delete=models.PROTECT)
+	category = models.ForeignKey(Categories, db_column='category', on_delete=models.PROTECT)
 
 	class Meta:
 		managed = False
 		db_table = 'records_category'
 
 class TranscribedRecordsCategory(models.Model):
-	record = models.ForeignKey(TranscribedRecords, db_column='record')
-	category = models.ForeignKey(Categories, db_column='category')
+	record = models.ForeignKey(TranscribedRecords, db_column='record', on_delete=models.PROTECT)
+	category = models.ForeignKey(Categories, db_column='category', on_delete=models.PROTECT)
 
 	class Meta:
 		managed = True

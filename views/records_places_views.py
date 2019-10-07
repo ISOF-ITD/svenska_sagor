@@ -3,8 +3,8 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from ..models import RecordsPlaces
 from ..forms import RecordsPlacesForm
-from django.core.urlresolvers import reverse_lazy
-from django.core.urlresolvers import reverse
+from django.urls import reverse_lazy
+from django.urls import reverse
 from django.http import Http404
 
 
