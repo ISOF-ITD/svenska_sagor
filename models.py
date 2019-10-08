@@ -83,11 +83,12 @@ class Socken(models.Model):
 		verbose_name = 'Socken'
 		verbose_name_plural = 'Socknar'
 
+
 class Categories(models.Model):
 	id = models.CharField(primary_key=True, max_length=10)
 	name = models.CharField(max_length=255)
 	name_en = models.CharField(max_length=255, null=True, blank=True)
-	type = models.CharField(max_length=255, choices=[('sägner', 'Sägner'), ('frågelista', 'Frågelista'), ('webbfrågelista', 'Webbfrågelista'), ('matkarta', 'Matkarta'), ('digitalt-kulturarv', 'Digitalt kulturarv')])
+	type = models.CharField(max_length=255, choices=[('folkminnen', 'Folkminnen'), ('sägner', 'Sägner'), ('frågelista', 'Frågelista'), ('webbfrågelista', 'Webbfrågelista'), ('matkarta', 'Matkarta'), ('digitalt-kulturarv', 'Digitalt kulturarv')])
 
 	def __str__(self):
 		return str(self.name)+' ('+self.id+') ['+self.type+']'
@@ -231,50 +232,6 @@ class Records(models.Model):
 		)
 
 
-class TranscribedRecords(models.Model):
-	id = models.CharField(max_length=50, primary_key=True)
-	title = models.CharField(max_length=255)
-	text = models.TextField()
-	year = models.DateField(blank=True, null=True)
-	archive = models.CharField(max_length=255, blank=True)
-	archive_id = models.CharField(max_length=255, blank=True)
-	type = models.CharField(max_length=20)
-	archive_page = models.CharField(max_length=20, blank=True, null=True)
-	total_pages = models.IntegerField(blank=True, null=True)
-	source = models.TextField(blank=True)
-	comment = models.TextField(blank=True)
-	country = models.CharField(max_length=50)
-	language = models.CharField(max_length=50)
-	transcribed_date = models.DateTimeField()
-	transcribed_by_name = models.TextField(blank=True)
-	transcribed_by_email = models.TextField(blank=True)
-	checked_date = models.DateTimeField()
-	checked_by_name = models.TextField(blank=True)
-	checked_by_email = models.TextField(blank=True)
-	audit_status = models.TextField(blank=True)
-
-	person_objects = models.ManyToManyField(
-		Persons,
-		through='TranscribedRecordsPersons',
-		#    through_fields = ('record', 'person'),
-		verbose_name='Personer'
-	)
-	places = models.ManyToManyField(
-		Socken,
-		through='TranscribedRecordsPlaces',
-		#    through_fields = ('record', 'place'),
-		verbose_name='Socken'
-	)
-	categories = models.ManyToManyField(
-		Categories,
-		through='TranscribedRecordsCategory',
-		#    through_fields = ('record', 'category'),
-		verbose_name='Kategorier'
-	)
-	class Meta:
-		db_table = 'transcribed_records'
-
-
 class MetadataTypes(models.Model):
 	type = models.CharField(max_length=255, blank=False, null=False)
 	label = models.CharField(max_length=500, blank=False, null=False)
@@ -333,16 +290,6 @@ class RecordsPersons(models.Model):
 		db_table = 'records_persons'
 		unique_together = (('record', 'person'),)
 
-class TranscribedRecordsPersons(models.Model):
-	record = models.ForeignKey(TranscribedRecords, db_column='record')
-	person = models.ForeignKey(Persons, db_column='person')
-	relation = models.CharField(max_length=20, blank=True, null=True, choices=[('i', 'Informant'), ('c', 'Uppteckare'), ('sender', 'Avsändare'), ('receiver', 'Mottagare'), ('recorder', 'Intervjuare')])
-
-	class Meta:
-		managed = True
-		db_table = 'transcribed_records_persons'
-		unique_together = (('record', 'person'),)
-
 
 class RecordsPlaces(models.Model):
 	relation_type_choices = [
@@ -362,24 +309,6 @@ class RecordsPlaces(models.Model):
 		db_table = 'records_places'
 
 
-class TranscribedRecordsPlaces(models.Model):
-	relation_type_choices = [
-		('place_collected', 'Insamlingsort'),
-		('place_mentioned', 'Nämns i texten'),
-		('related_person_place', 'Födelseort/hemort'),
-		('dispatch_place', 'Avsändningsort'),
-		('destination_place', 'Destination')
-	]
-
-	record = models.ForeignKey(TranscribedRecords, db_column='record')
-	place = models.ForeignKey(Socken, db_column='place')
-	type = models.CharField(max_length=20, blank=True, null=True, default='place_collected', choices=relation_type_choices)
-
-	class Meta:
-		managed = True
-		db_table = 'transcribed_records_places'
-
-
 class RecordsCategory(models.Model):
 	record = models.ForeignKey(Records, db_column='record')
 	category = models.ForeignKey(Categories, db_column='category')
@@ -387,14 +316,6 @@ class RecordsCategory(models.Model):
 	class Meta:
 		managed = False
 		db_table = 'records_category'
-
-class TranscribedRecordsCategory(models.Model):
-	record = models.ForeignKey(TranscribedRecords, db_column='record')
-	category = models.ForeignKey(Categories, db_column='category')
-
-	class Meta:
-		managed = True
-		db_table = 'transcribed_records_category'
 
 
 class SockenV1(models.Model):
