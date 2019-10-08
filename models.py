@@ -15,6 +15,8 @@ import requests, json
 from django.db import models
 from threading import Timer
 
+from django.contrib.auth.models import User
+
 import es_config
 
 class Harad(models.Model):
@@ -335,9 +337,9 @@ class ImportBatch(models.Model):
 	# id = models.CharField(primary_key=True, max_length=150)
 	id = models.IntegerField(primary_key=True)
 	archive = models.CharField(max_length=255, blank=True, verbose_name='Arkiv')
-	type = models.CharField(max_length=20, verbose_name='Materialtyp', choices=type_choices)
-	country = models.CharField(max_length=20, blank=False, null=False, default='sweden', choices=country_choices)
-	language = models.CharField(max_length=20, blank=False, null=False, default='swedish', choices=language_choices)
+	#type = models.CharField(max_length=20, verbose_name='Materialtyp', choices=type_choices)
+	#country = models.CharField(max_length=20, blank=False, null=False, default='sweden', choices=country_choices)
+	#language = models.CharField(max_length=20, blank=False, null=False, default='swedish', choices=language_choices)
 
 	#Change
 	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
@@ -356,52 +358,52 @@ class ImportBatch(models.Model):
 
 
 class ImportRecords(models.Model):
-	# id = models.CharField(primary_key=True, max_length=150)
-	id = models.IntegerField(primary_key=True)
-	batchid = models.IntegerField()
-	title = models.CharField(max_length=255, verbose_name='Titel')
- 	text = models.TextField(blank=True, null=True)
-	year = models.DateField(blank=True, null=True)
+    # id = models.CharField(primary_key=True, max_length=150)
+    id = models.IntegerField(primary_key=True)
+    batchid = models.IntegerField()
+    title = models.CharField(max_length=255, verbose_name='Titel')
+    text = models.TextField(blank=True, null=True)
+    year = models.DateField(blank=True, null=True)
 
-	#Categories. Comma separated if more than one
-	category = models.CharField(max_length=20, blank=True, verbose_name='Kategori')
-	#Data on each batchid:
-	#archive = models.CharField(max_length=255, blank=True, verbose_name='Arkiv')
+    #Categories. Comma separated if more than one
+    category = models.CharField(max_length=20, blank=True, verbose_name='Kategori')
+    #Data on each batchid:
+    #archive = models.CharField(max_length=255, blank=True, verbose_name='Arkiv')
 
-	#Accessionsid
-	archive_sub_id = models.IntegerField()
-	#Accessionsnummer
-	archive_id = models.CharField(max_length=1000, blank=True)
-	#type = models.CharField(max_length=20, verbose_name='Materialtyp', choices=type_choices)
+    #Accessionsid
+    archive_sub_id = models.IntegerField()
+    #Accessionsnummer
+    archive_id = models.CharField(max_length=1000, blank=True)
+    #type = models.CharField(max_length=20, verbose_name='Materialtyp', choices=type_choices)
 
-	#start_page = models.IntegerField()
-	#end_page = models.IntegerField()
-	#Start page
-	archive_page = models.CharField(max_length=20, blank=True, null=True)
-	#endpage = archive_page + total_pages
-	total_pages = models.IntegerField(default=1, blank=False, null=False)
+    #start_page = models.IntegerField()
+    #end_page = models.IntegerField()
+    #Start page
+    archive_page = models.CharField(max_length=20, blank=True, null=True)
+    #endpage = archive_page + total_pages
+    total_pages = models.IntegerField(default=1, blank=False, null=False)
 
-	source = models.TextField(blank=True, verbose_name='Källa')
-	comment = models.TextField(blank=True)
+    source = models.TextField(blank=True, verbose_name='Källa')
+    comment = models.TextField(blank=True)
 
-	#Data on each batchid:
-	#country = models.CharField(max_length=20, blank=False, null=False, default='sweden', choices=country_choices)
-	#language = models.CharField(max_length=20, blank=False, null=False, default='swedish', choices=language_choices)
+    #Data on each batchid:
+    #country = models.CharField(max_length=20, blank=False, null=False, default='sweden', choices=country_choices)
+    #language = models.CharField(max_length=20, blank=False, null=False, default='swedish', choices=language_choices)
 
-	#Change
-	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
-	changedate = models.DateTimeField(auto_now=True, verbose_name="Ändringsdatum")
-	createuser = models.ForeignKey(User, null=True, blank=True, editable=False, verbose_name="Excerperad av")
-	changeuser = models.ForeignKey(User, null=True, blank=True, editable=False,
-								 related_name='Uppdaterad av+', verbose_name="Uppdaterad av")
+    #Change
+    createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
+    changedate = models.DateTimeField(auto_now=True, verbose_name="Ändringsdatum")
+    createuser = models.ForeignKey(User, null=True, blank=True, editable=False, verbose_name="Excerperad av")
+    changeuser = models.ForeignKey(User, null=True, blank=True, editable=False,
+                                 related_name='Uppdaterad av+', verbose_name="Uppdaterad av")
 
-	def __str__(self):
-		name = ""
-		if self.title != None:
-			name = self.title
-		if self.category != None:
-			name = name + ' - ' + self.category
-		return name
+    def __str__(self):
+        name = ""
+        if self.title != None:
+            name = self.title
+        if self.category != None:
+            name = name + ' - ' + self.category
+        return name
 
 
 def model_m2m_changed(sender, **kwargs):
