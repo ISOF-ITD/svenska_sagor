@@ -1,5 +1,5 @@
 from django import forms
-from .models import CategoriesKlintberg, RecordsPlaces, Records, RecordsCategory, Persons, RecordsPersons, PersonsPlaces, SockenV1, RecordsMedia, Socken, Categories, Harad
+from .models import CategoriesKlintberg, RecordsPlaces, Records, RecordsCategory, Persons, RecordsPersons, PersonsPlaces, SockenV1, RecordsMedia, Socken, Categories, Harad, MetadataTypes
 
 
 class CategoriesKlintbergForm(forms.ModelForm):
@@ -202,7 +202,7 @@ class PersonsForm(forms.ModelForm):
 
     class Meta:
         model = Persons
-        fields = ['name', 'gender', 'birth_year', 'address', 'biography', 'image', 'changedate']
+        fields = ['name', 'gender', 'birth_year', 'address', 'biography', 'image'] #, 'changedate']
         exclude = []
         widgets = None
         localized_fields = None
@@ -351,7 +351,7 @@ class SockenV1Form(forms.ModelForm):
 
     class Meta:
         model = SockenV1
-        fields = ['name', 'harad', 'lat', 'lng', 'changedate']
+        fields = ['name', 'harad', 'lat', 'lng'] #, 'changedate']
         exclude = []
         widgets = None
         localized_fields = None
@@ -533,4 +533,51 @@ class HaradForm(forms.ModelForm):
 
     def save(self, commit=True):
         return super(HaradForm, self).save(commit)
+
+
+class MetadataTypesForm(forms.ModelForm):
+
+    class Meta:
+        model = MetadataTypes
+        fields = ['type', 'label']
+        exclude = []
+        widgets = None
+        localized_fields = None
+        labels = {}
+        help_texts = {}
+        error_messages = {}
+
+    def __init__(self, *args, **kwargs):
+        return super(MetadataTypesForm, self).__init__(*args, **kwargs)
+
+    def is_valid(self):
+        return super(MetadataTypesForm, self).is_valid()
+
+    def full_clean(self):
+        return super(MetadataTypesForm, self).full_clean()
+
+    def clean_name(self):
+        name = self.cleaned_data.get("name", None)
+        return name
+
+    def clean_lan(self):
+        lan = self.cleaned_data.get("lan", None)
+        return lan
+
+    def clean_landskap(self):
+        landskap = self.cleaned_data.get("landskap", None)
+        return landskap
+
+    def clean_country(self):
+        country = self.cleaned_data.get("country", None)
+        return country
+
+    def clean(self):
+        return super(MetadataTypesForm, self).clean()
+
+    def validate_unique(self):
+        return super(MetadataTypesForm, self).validate_unique()
+
+    def save(self, commit=True):
+        return super(MetadataTypesForm, self).save(commit)
 

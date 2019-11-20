@@ -15,6 +15,8 @@ import requests, json
 from django.db import models
 from threading import Timer
 
+from django.contrib.auth.models import User
+
 import es_config
 
 class Harad(models.Model):
@@ -22,15 +24,38 @@ class Harad(models.Model):
 	lan = models.CharField(max_length=30, blank=True, null=True)
 	landskap = models.CharField(max_length=14, blank=True, null=True)
 	country = models.CharField(unique=True, max_length=100, blank=True, null=True)
+	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
+	changedate = models.DateTimeField(auto_now=True, blank=True, verbose_name="Ändrad datum")
+	createdby = models.ForeignKey(User, db_column='createdby', null=True, blank=True, editable=False,
+							 verbose_name="Excerperad av")
+	editedby = models.ForeignKey(User, db_column='editedby', null=True, blank=True, editable=False,
+								 related_name='Uppdaterad av+', verbose_name="Uppdaterad av")
 
 	def __str__(self):
 		return self.name if self.name else ''
 
 	class Meta:
-		managed = False
+		managed = True
 		db_table = 'harad'
 		verbose_name = 'Härad'
 		verbose_name_plural = 'Härads'
+
+
+class ImportBatch(models.Model):
+	batch_id = models.IntegerField(primary_key=True, null=False)
+	source_file_name = models.CharField(max_length=255, null=False)
+	records_count = models.IntegerField(blank=True, null=True)
+	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
+	changedate = models.DateTimeField(auto_now=True, blank=True, verbose_name="Ändrad datum")
+	createdby = models.ForeignKey(User, db_column='createdby', null=True, blank=True, editable=False,
+							 verbose_name="Excerperad av")
+	editedby = models.ForeignKey(User, db_column='editedby', null=True, blank=True, editable=False,
+								 related_name='Uppdaterad av+', verbose_name="Uppdaterad av")
+
+
+	class Meta:
+		managed = True
+		db_table = 'import_batch'
 
 
 class Socken(models.Model):
@@ -39,7 +64,12 @@ class Socken(models.Model):
 	fylke = models.CharField(max_length=50, blank=True, null=True)
 	lat = models.FloatField()
 	lng = models.FloatField()
-	#changedate = models.DateTimeField()
+	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
+	changedate = models.DateTimeField(auto_now=True, blank=True, verbose_name="Ändrad datum")
+	createdby = models.ForeignKey(User, db_column='createdby', null=True, blank=True, editable=False,
+							 verbose_name="Excerperad av")
+	editedby = models.ForeignKey(User, db_column='editedby', null=True, blank=True, editable=False,
+								 related_name='Uppdaterad av+', verbose_name="Uppdaterad av")
 
 	def map_tag(self):
 		values = {
@@ -78,7 +108,7 @@ class Socken(models.Model):
 		return self.name+' ('+str(self.id)+') '
 
 	class Meta:
-		managed = False
+		managed = True
 		db_table = 'socken'
 		verbose_name = 'Socken'
 		verbose_name_plural = 'Socknar'
@@ -89,12 +119,18 @@ class Categories(models.Model):
 	name = models.CharField(max_length=255)
 	name_en = models.CharField(max_length=255, null=True, blank=True)
 	type = models.CharField(max_length=255, choices=[('folkminnen', 'Folkminnen'), ('sägner', 'Sägner'), ('frågelista', 'Frågelista'), ('webbfrågelista', 'Webbfrågelista'), ('matkarta', 'Matkarta'), ('digitalt-kulturarv', 'Digitalt kulturarv')])
+	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
+	changedate = models.DateTimeField(auto_now=True, blank=True, verbose_name="Ändrad datum")
+	createdby = models.ForeignKey(User, db_column='createdby', null=True, blank=True, editable=False,
+							 verbose_name="Excerperad av")
+	editedby = models.ForeignKey(User, db_column='editedby', null=True, blank=True, editable=False,
+								 related_name='Uppdaterad av+', verbose_name="Uppdaterad av")
 
 	def __str__(self):
 		return str(self.name)+' ('+self.id+') ['+self.type+']'
 
 	class Meta:
-		managed = False
+		managed = True
 		db_table = 'categories_v2'
 		ordering = ['type']
 		verbose_name = 'Kategori'
@@ -106,9 +142,15 @@ class CategoriesKlintberg(models.Model):
 	name = models.CharField(max_length=255)
 	name_en = models.CharField(max_length=255)
 	level = models.IntegerField()
+	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
+	changedate = models.DateTimeField(auto_now=True, blank=True, verbose_name="Ändrad datum")
+	createdby = models.ForeignKey(User, db_column='createdby', null=True, blank=True, editable=False,
+							 verbose_name="Excerperad av")
+	editedby = models.ForeignKey(User, db_column='editedby', null=True, blank=True, editable=False,
+								 related_name='Uppdaterad av+', verbose_name="Uppdaterad av")
 
 	class Meta:
-		managed = False
+		managed = True
 		db_table = 'categories_klintberg'
 
 
@@ -120,7 +162,13 @@ class Persons(models.Model):
 	address = models.CharField(blank=True, null=True, max_length=255)
 	biography = models.TextField(blank=True, null=True)
 	image = models.ImageField(blank=True, null=True, verbose_name='Bildfil', upload_to='personer')
-	changedate = models.DateTimeField()
+	#changedate = models.DateTimeField()
+	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
+	changedate = models.DateTimeField(auto_now=True, blank=True, verbose_name="Ändrad datum")
+	createdby = models.ForeignKey(User, db_column='createdby', null=True, blank=True, editable=False,
+							 verbose_name="Excerperad av")
+	editedby = models.ForeignKey(User, db_column='editedby', null=True, blank=True, editable=False,
+								 related_name='Uppdaterad av+', verbose_name="Uppdaterad av")
 	places = models.ManyToManyField(
 		Socken,
 		through='PersonsPlaces',
@@ -143,7 +191,7 @@ class Persons(models.Model):
 		return self.name+' ['+self.id+'] ('+str(self.birth_year)+')'
 
 	class Meta:
-		managed = False
+		managed = True
 		db_table = 'persons'
 		verbose_name = 'Person'
 		verbose_name_plural = 'Personer'
@@ -155,8 +203,18 @@ class PersonsPlaces(models.Model):
 	relation = models.CharField(max_length=5, blank=True, null=True, choices=[('birth', 'birth'), ('home', 'home')])
 
 	class Meta:
-		managed = False
+		managed = True
 		db_table = 'persons_places'
+
+
+class CrowdSourceUsers(models.Model):
+	userid = models.CharField(primary_key=True, max_length=150)
+	name = models.CharField(max_length=255)
+	email =  models.CharField(max_length=255)
+
+	class Meta:
+		managed = True
+		db_table = 'crowdsource_users'
 
 
 class Records(models.Model):
@@ -184,6 +242,14 @@ class Records(models.Model):
 		('norwegian', 'Norska')
 	]
 
+	transcription_statuses = [
+		('untranscribed', 'Ej transkriberad'),
+		('transcribed', 'Transkriberad'),
+		('reviewing', 'Under granskning'),
+		('approved', 'Godkänd'),
+		('published', 'Publicerad')
+	]
+
 	id = models.CharField(primary_key=True, max_length=150)
 	title = models.CharField(max_length=255, verbose_name='Titel')
 	text = models.TextField(blank=True, null=True)
@@ -199,7 +265,19 @@ class Records(models.Model):
 	comment = models.TextField(blank=True)
 	country = models.CharField(max_length=20, blank=False, null=False, default='sweden', choices=country_choices)
 	language = models.CharField(max_length=20, blank=False, null=False, default='swedish', choices=language_choices)
-	changedate = models.DateTimeField(auto_now_add=True, blank=True)
+	import_batch = models.ForeignKey(ImportBatch, db_column="batch_id", null=True)
+	transcriptiondate = models.DateTimeField(blank=True, verbose_name="Transkriptionsdatum")
+	transcribedby = models.ForeignKey(CrowdSourceUsers, db_column='transcribedby', null=True, blank=True)
+	transcriptionstatus = models.CharField(max_length=20, blank=False, null=False, default='new', choices=transcription_statuses)
+	approvedby = models.CharField(max_length=50, blank=False, null=True)
+	approvedate = models.DateTimeField(blank=True, verbose_name="Godkänd datum")
+	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
+	changedate = models.DateTimeField(auto_now=True, blank=True, verbose_name="Ändrad datum")
+	createdby = models.ForeignKey(User, db_column='createdby', null=True, blank=True, editable=False,
+							 verbose_name="Excerperad av")
+	editedby = models.ForeignKey(User, db_column='editedby', null=True, blank=True, editable=False,
+								 related_name='Uppdaterad av+', verbose_name="Uppdaterad av")
+
 	person_objects = models.ManyToManyField(
 		Persons,
 		through='RecordsPersons',
@@ -223,7 +301,7 @@ class Records(models.Model):
 		return self.title
 
 	class Meta:
-		managed = False
+		managed = True
 		db_table = 'records'
 		verbose_name = 'Uppteckning/inspelning'
 		verbose_name_plural = 'Uppteckningar och inspelningar'
@@ -232,12 +310,45 @@ class Records(models.Model):
 		)
 
 
-class MetadataTypes(models.Model):
-	type = models.CharField(max_length=255, blank=False, null=False)
-	label = models.CharField(max_length=500, blank=False, null=False)
+class CrowdSourceRecords(models.Model):
+	transcription_statuses = [
+		('untranscribed', 'Ej transkriberad'),
+		('transcribed', 'Transkriberad'),
+		('reviewing', 'Under granskning'),
+		('approved', 'Godkänd'),
+		('published', 'Publicerad')
+	]
+	id = models.CharField(primary_key=True, max_length=150)
+	title = models.CharField(max_length=255, verbose_name='Titel')
+	text = models.TextField(blank=True, null=True)
+	source = models.TextField(blank=True, verbose_name='Källa')
+	year = models.DateField(blank=True, null=True)
+	transcriptiondate = models.DateTimeField(blank=True, verbose_name="Transkriptionsdatum")
+	transcribedby = models.ForeignKey(CrowdSourceUsers, db_column='transcribedby', null=True, blank=True)
+	transcriptionstatus = models.CharField(max_length=20, blank=False, null=False, default='new', choices=transcription_statuses)
+	approvedby = models.CharField(max_length=50, blank=False, null=True)
+	approvedate = models.DateTimeField(blank=True, verbose_name="Godkänd datum")
+	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
+	changedate = models.DateTimeField(auto_now=True, blank=True, verbose_name="Ändrad datum")
+	createdby = models.ForeignKey(User, db_column='createdby', null=True, blank=True, editable=False)
 
 	class Meta:
 		managed = False
+		db_table = 'records'
+
+
+class MetadataTypes(models.Model):
+	type = models.CharField(max_length=255, blank=False, null=False)
+	label = models.CharField(max_length=500, blank=False, null=False)
+	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
+	changedate = models.DateTimeField(auto_now=True, blank=True, verbose_name="Ändrad datum")
+	createdby = models.ForeignKey(User, db_column='createdby', null=True, blank=True, editable=False,
+							 verbose_name="Excerperad av")
+	editedby = models.ForeignKey(User, db_column='editedby', null=True, blank=True, editable=False,
+								 related_name='Uppdaterad av+', verbose_name="Uppdaterad av")
+
+	class Meta:
+		managed = True
 		db_table = 'metadata_types'
 		verbose_name = 'Metadata typ'
 		verbose_name_plural = 'Metadata typer'
@@ -265,7 +376,7 @@ class RecordsMetadata(models.Model):
 		return self.type+': '+self.value if self.type and self.value else ''
 
 	class Meta:
-		managed = False
+		managed = True
 		db_table = 'records_metadata'
 
 
@@ -275,8 +386,15 @@ class RecordsMedia(models.Model):
 	source = models.CharField(max_length=255, blank=True, null=True)
 	title = models.TextField(blank=True, null=True)
 
+	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
+	changedate = models.DateTimeField(auto_now=True, blank=True, verbose_name="Ändrad datum")
+	createdby = models.ForeignKey(User, db_column='createdby', null=True, blank=True, editable=False,
+							 verbose_name="Excerperad av")
+	editedby = models.ForeignKey(User, db_column='editedby', null=True, blank=True, editable=False,
+								 related_name='Uppdaterad av+', verbose_name="Uppdaterad av")
+
 	class Meta:
-		managed = False
+		managed = True
 		db_table = 'records_media'
 
 
@@ -285,8 +403,15 @@ class RecordsPersons(models.Model):
 	person = models.ForeignKey(Persons, db_column='person')
 	relation = models.CharField(max_length=20, blank=True, null=True, choices=[('i', 'Informant'), ('c', 'Uppteckare'), ('sender', 'Avsändare'), ('receiver', 'Mottagare'), ('recorder', 'Intervjuare')])
 
+	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
+	changedate = models.DateTimeField(auto_now=True, blank=True, verbose_name="Ändrad datum")
+	createdby = models.ForeignKey(User, db_column='createdby', null=True, blank=True, editable=False,
+							 verbose_name="Excerperad av")
+	editedby = models.ForeignKey(User, db_column='editedby', null=True, blank=True, editable=False,
+								 related_name='Uppdaterad av+', verbose_name="Uppdaterad av")
+
 	class Meta:
-		managed = False
+		managed = True
 		db_table = 'records_persons'
 		unique_together = (('record', 'person'),)
 
@@ -304,8 +429,15 @@ class RecordsPlaces(models.Model):
 	place = models.ForeignKey(Socken, db_column='place')
 	type = models.CharField(max_length=20, blank=True, null=True, default='place_collected', choices=relation_type_choices)
 
+	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
+	changedate = models.DateTimeField(auto_now=True, blank=True, verbose_name="Ändrad datum")
+	createdby = models.ForeignKey(User, db_column='createdby', null=True, blank=True, editable=False,
+							 verbose_name="Excerperad av")
+	editedby = models.ForeignKey(User, db_column='editedby', null=True, blank=True, editable=False,
+								 related_name='Uppdaterad av+', verbose_name="Uppdaterad av")
+
 	class Meta:
-		managed = False
+		managed = True
 		db_table = 'records_places'
 
 
@@ -313,21 +445,35 @@ class RecordsCategory(models.Model):
 	record = models.ForeignKey(Records, db_column='record')
 	category = models.ForeignKey(Categories, db_column='category')
 
+	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
+	changedate = models.DateTimeField(auto_now=True, blank=True, verbose_name="Ändrad datum")
+	createdby = models.ForeignKey(User, db_column='createdby', null=True, blank=True, editable=False,
+							 verbose_name="Excerperad av")
+	editedby = models.ForeignKey(User, db_column='editedby', null=True, blank=True, editable=False,
+								 related_name='Uppdaterad av+', verbose_name="Uppdaterad av")
+
 	class Meta:
-		managed = False
+		managed = True
 		db_table = 'records_category'
 
 
 class SockenV1(models.Model):
-	id = models.IntegerField(primary_key=True)
+	id = models.IntegerField(primary_key=True, default=0)
 	name = models.CharField(max_length=255)
 	harad = models.IntegerField()
 	lat = models.FloatField(blank=True, null=True)
 	lng = models.FloatField(blank=True, null=True)
-	changedate = models.DateTimeField()
+# 	changedate = models.DateTimeField()
+
+	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
+	changedate = models.DateTimeField(auto_now=True, blank=True, verbose_name="Ändrad datum")
+	createdby = models.ForeignKey(User, db_column='createdby', null=True, blank=True, editable=False,
+							 verbose_name="Excerperad av")
+	editedby = models.ForeignKey(User, db_column='editedby', null=True, blank=True, editable=False,
+								 related_name='Uppdaterad av+', verbose_name="Uppdaterad av")
 
 	class Meta:
-		managed = False
+		managed = True
 		db_table = 'socken_v1'
 
 

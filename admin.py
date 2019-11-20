@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CategoriesKlintberg, RecordsPlaces, Records, MetadataTypes, RecordsCategory, Persons, RecordsPersons, PersonsPlaces, SockenV1, RecordsMedia, Socken, Categories, Harad, RecordsMetadata
+from .models import CategoriesKlintberg, RecordsPlaces, Records, MetadataTypes, RecordsCategory, Persons, RecordsPersons, PersonsPlaces, SockenV1, RecordsMedia, Socken, Categories, Harad, RecordsMetadata, CrowdSourceRecords
 from django_baker.admin import ExtendedModelAdminMixin
 from .filters import DropdownFilter, RelatedDropdownFilter
 from django.contrib.auth.models import User
@@ -58,6 +58,7 @@ class RecordsPlacesInline(admin.TabularInline):
 	model._meta.verbose_name_plural = "Platser"
 
 
+
 class RecordsMediaInline(admin.TabularInline):
 	model = RecordsMedia
 	model._meta.verbose_name_plural = "Filer"
@@ -71,6 +72,7 @@ class RecordsCategoriesInline(admin.TabularInline):
 
 class RecordsMetadataInline(admin.TabularInline):
 	model = RecordsMetadata
+
 
 def force_update(modeladmin, request, queryset):
 	for model in queryset:
@@ -93,6 +95,14 @@ class MetadataTypesAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	formfield_overrides = {}
 	fields = ['type', 'label']
 
+	def save_model(self, request, obj, form, change):
+		if change == True:										# Was the post changed?
+			obj.editedby = request.user							#	Get the current user and log it as the editor
+		else:   												# The post might be new
+			if getattr(obj, 'createdby', None) is None:			#	check if the creator is defined
+				obj.createdby = request.user					#		If not, set the current user as the creator
+		obj.save()												# Save the post.
+
 
 class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	list_display = ['id', 'title', 'archive', 'type', 'country']
@@ -107,9 +117,9 @@ class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	radio_fields = {}
 	prepopulated_fields = {}
 	formfield_overrides = {}
-	readonly_fields = []
-	actions  = [force_update]
-	fields = [('title', 'id'), ('type'), ('archive', 'year'), ('archive_page', 'total_pages', 'archive_id'), 'text', 'source', 'comment', ('country', 'language')]
+	readonly_fields = ['transcriptionstatus', 'transcribedby', 'approvedby', 'approvedate']
+	actions = [force_update]
+	fields = [('title', 'id'), ('type'), ('archive', 'year'), ('archive_page', 'total_pages', 'archive_id'), 'text', 'source', 'comment', ('country', 'language'), ('transcriptionstatus', 'transcribedby'), ('approvedby', 'approvedate')]
 
 	def lookup_allowed(self, lookup, value):
 		if lookup == 'places__harad__landskap':
@@ -119,6 +129,11 @@ class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	def save_model(self, request, obj, form, change):
 		if request.user.groups.filter(name='Norge').exists():
 			obj.country = 'norway'
+		if getattr(obj, 'createdby', None) is None:
+			# if change == False:
+			obj.createdby = request.user
+		else:
+			obj.changedby = request.user
 		obj.save()
 
 	def get_model_perms(self, request):
@@ -138,6 +153,24 @@ class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 		form = super(RecordsAdmin, self).get_form(request, obj, **kwargs)
 		form.base_fields['text'].widget.attrs['style'] = 'height: 500px;'
 		return form
+
+
+class CrowdSourceReview(ExtendedModelAdminMixin, admin.ModelAdmin):
+	list_display = ['id', 'title']
+	extra_list_display = []
+	extra_list_filter = []
+	extra_search_fields = []
+	list_editable = []
+	raw_id_fields = []
+	inlines = []
+	filter_vertical = []
+	filter_horizontal = []
+	radio_fields = {}
+	prepopulated_fields = {}
+	formfield_overrides = {}
+	readonly_fields = []
+	actions = [force_update]
+	fields = []
 
 
 class RecordsCategoryAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
@@ -176,8 +209,8 @@ class PersonsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	radio_fields = {}
 	prepopulated_fields = {}
 	formfield_overrides = {}
-	readonly_fields = ['image_tag']
-	fields = ['id', 'name', ('gender', 'birth_year'), 'address', 'biography', ('image', 'image_tag')]
+	readonly_fields = ['image_tag', 'createdby', 'createdate', 'editedby', 'changedate']
+	fields = ['id', 'name', ('gender', 'birth_year'), 'address', 'biography', ('image', 'image_tag'), ('createdby', 'createdate', 'editedby', 'changedate')]
 
 	def lookup_allowed(self, lookup, value):
 		if lookup == 'record_objects__country__exact':
@@ -190,6 +223,14 @@ class PersonsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 			inner_qs = Records.objects.filter(country='norway')
 			return qs.filter(record_objects__in=inner_qs).distinct()
 		return qs
+
+	def save_model(self, request, obj, form, change):
+		if change == True:										# Was the post changed?
+			obj.editedby = request.user							#	Get the current user and log it as the editor
+		else:   												# The post might be new
+			if getattr(obj, 'createdby', None) is None:			#	check if the creator is defined
+				obj.createdby = request.user					#		If not, set the current user as the creator
+		obj.save()												# Save the post.
 
 
 class RecordsPersonsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
@@ -296,6 +337,14 @@ class CategoriesAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	formfield_overrides = {}
 	readonly_fields = []
 
+	def save_model(self, request, obj, form, change):
+		if change == True:										# Was the post changed?
+			obj.editedby = request.user							#	Get the current user and log it as the editor
+		else:   												# The post might be new
+			if getattr(obj, 'createdby', None) is None:			#	check if the creator is defined
+				obj.createdby = request.user					#		If not, set the current user as the creator
+		obj.save()												# Save the post.
+
 
 class HaradAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	extra_list_display = []
@@ -310,6 +359,14 @@ class HaradAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 	prepopulated_fields = {}
 	formfield_overrides = {}
 	readonly_fields = ['id']
+
+	def save_model(self, request, obj, form, change):
+		if change == True:										# Was the post changed?
+			obj.editedby = request.user							#	Get the current user and log it as the editor
+		else:   												# The post might be new
+			if getattr(obj, 'createdby', None) is None:			#	check if the creator is defined
+				obj.createdby = request.user					#		If not, set the current user as the creator
+		obj.save()												# Save the post.
 
 
 class CustomUserAdmin(UserAdmin):
@@ -329,6 +386,7 @@ class CustomGroupAdmin(GroupAdmin):
 admin.site.register(CategoriesKlintberg, CategoriesKlintbergAdmin)
 admin.site.register(RecordsPlaces, RecordsPlacesAdmin)
 admin.site.register(Records, RecordsAdmin)
+admin.site.register(CrowdSourceRecords, CrowdSourceReview)
 admin.site.register(RecordsCategory, RecordsCategoryAdmin)
 admin.site.register(Persons, PersonsAdmin)
 admin.site.register(RecordsPersons, RecordsPersonsAdmin)
