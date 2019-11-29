@@ -187,7 +187,6 @@ class Records(models.Model):
 	]
 
 	id = models.CharField(primary_key=True, max_length=150)
-	batchid = models.IntegerField(default='sweden')
 	title = models.CharField(max_length=255, verbose_name='Titel')
 	text = models.TextField(blank=True, null=True)
 	year = models.DateField(blank=True, null=True)
