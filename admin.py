@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CategoriesKlintberg, RecordsPlaces, Records, MetadataTypes, RecordsCategory, Persons, RecordsPersons, PersonsPlaces, SockenV1, RecordsMedia, Socken, Categories, Harad, RecordsMetadata, CrowdSourceRecords
+from .models import CategoriesKlintberg, RecordsPlaces, Records, MetadataTypes, RecordsCategory, Persons, CrowdSourceMedia, RecordsPersons, PersonsPlaces, SockenV1, RecordsMedia, Socken, Categories, Harad, RecordsMetadata, CrowdSourceRecords
 from django_baker.admin import ExtendedModelAdminMixin
 from .filters import DropdownFilter, RelatedDropdownFilter
 from django.contrib.auth.models import User
@@ -58,10 +58,16 @@ class RecordsPlacesInline(admin.TabularInline):
 	model._meta.verbose_name_plural = "Platser"
 
 
-
 class RecordsMediaInline(admin.TabularInline):
 	model = RecordsMedia
 	model._meta.verbose_name_plural = "Filer"
+
+
+class CrowdSourceMediaInline(admin.TabularInline):
+	model = CrowdSourceMedia
+	model._meta.verbose_name_plural = "Källfiler"
+	fields = ['image_tag']
+	readonly_fields = ['image_tag']
 
 
 class RecordsCategoriesInline(admin.TabularInline):
@@ -156,21 +162,26 @@ class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 
 
 class CrowdSourceReview(ExtendedModelAdminMixin, admin.ModelAdmin):
-	list_display = ['id', 'title']
+	list_display = ['id', 'title', 'to_be_transcribed']
 	extra_list_display = []
-	extra_list_filter = []
+	extra_list_filter = ['transcriptionstatus']
 	extra_search_fields = []
 	list_editable = []
 	raw_id_fields = []
-	inlines = []
+	inlines = [CrowdSourceMediaInline]
 	filter_vertical = []
 	filter_horizontal = []
 	radio_fields = {}
 	prepopulated_fields = {}
 	formfield_overrides = {}
-	readonly_fields = []
+	readonly_fields = ['id', 'title', 'transcriptiondate', 'approvedby']
 	actions = [force_update]
-	fields = []
+	fields = [('id', 'title'), 'text', ('transcribedby', 'transcriptiondate'), ('transcriptionstatus', 'approvedby')]
+
+	def save_model(self, request, obj, form, change):
+		if change == True:
+			obj.approvedby = request.user
+		obj.save()
 
 
 class RecordsCategoryAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):

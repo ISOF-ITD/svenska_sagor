@@ -13,5 +13,5 @@ urlpatterns = [
     url(r'^categories_klintbergs/', include('Sagenkarta-Admin.urls.categories_klintberg_urls')),
     url(r'^categoriess/', include('Sagenkarta-Admin.urls.categories_urls')),
     url(r'^harads/', include('Sagenkarta-Admin.urls.harad_urls')),
-    url(r'^frontend/', include('Sagenkarta-Admin.urls.frontend_urls')),
+    # url(r'^frontend/', include('Sagenkarta-Admin.urls.frontend_urls')),
 ]

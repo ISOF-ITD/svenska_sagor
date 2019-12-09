@@ -42,7 +42,7 @@ class Harad(models.Model):
 
 
 class ImportBatch(models.Model):
-	batch_id = models.IntegerField(primary_key=True, null=False)
+	batch_id = models.AutoField(primary_key=True, null=False)
 	source_file_name = models.CharField(max_length=255, null=False)
 	records_count = models.IntegerField(blank=True, null=True)
 	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
@@ -210,7 +210,7 @@ class PersonsPlaces(models.Model):
 class CrowdSourceUsers(models.Model):
 	userid = models.CharField(primary_key=True, max_length=150)
 	name = models.CharField(max_length=255)
-	email =  models.CharField(max_length=255)
+	email = models.EmailField()
 
 	class Meta:
 		managed = True
@@ -269,11 +269,11 @@ class Records(models.Model):
 	transcriptiondate = models.DateTimeField(blank=True, verbose_name="Transkriptionsdatum")
 	transcribedby = models.ForeignKey(CrowdSourceUsers, db_column='transcribedby', null=True, blank=True)
 	transcriptionstatus = models.CharField(max_length=20, blank=False, null=False, default='new', choices=transcription_statuses)
-	approvedby = models.CharField(max_length=50, blank=False, null=True)
+	approvedby = models.ForeignKey(User, db_column='approvedby', null=True, blank=True, editable=False, verbose_name='Godkänd av')
 	approvedate = models.DateTimeField(blank=True, verbose_name="Godkänd datum")
 	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
 	changedate = models.DateTimeField(auto_now=True, blank=True, verbose_name="Ändrad datum")
-	createdby = models.ForeignKey(User, db_column='createdby', null=True, blank=True, editable=False,
+	createdby = models.ForeignKey(User, db_column='createdby', related_name='records_created',null=True, blank=True, editable=False,
 							 verbose_name="Excerperad av")
 	editedby = models.ForeignKey(User, db_column='editedby', null=True, blank=True, editable=False,
 								 related_name='Uppdaterad av+', verbose_name="Uppdaterad av")
@@ -308,33 +308,6 @@ class Records(models.Model):
 		permissions = (
 			('view_records', 'Kan visa postar'),
 		)
-
-
-class CrowdSourceRecords(models.Model):
-	transcription_statuses = [
-		('untranscribed', 'Ej transkriberad'),
-		('transcribed', 'Transkriberad'),
-		('reviewing', 'Under granskning'),
-		('approved', 'Godkänd'),
-		('published', 'Publicerad')
-	]
-	id = models.CharField(primary_key=True, max_length=150)
-	title = models.CharField(max_length=255, verbose_name='Titel')
-	text = models.TextField(blank=True, null=True)
-	source = models.TextField(blank=True, verbose_name='Källa')
-	year = models.DateField(blank=True, null=True)
-	transcriptiondate = models.DateTimeField(blank=True, verbose_name="Transkriptionsdatum")
-	transcribedby = models.ForeignKey(CrowdSourceUsers, db_column='transcribedby', null=True, blank=True)
-	transcriptionstatus = models.CharField(max_length=20, blank=False, null=False, default='new', choices=transcription_statuses)
-	approvedby = models.CharField(max_length=50, blank=False, null=True)
-	approvedate = models.DateTimeField(blank=True, verbose_name="Godkänd datum")
-	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
-	changedate = models.DateTimeField(auto_now=True, blank=True, verbose_name="Ändrad datum")
-	createdby = models.ForeignKey(User, db_column='createdby', null=True, blank=True, editable=False)
-
-	class Meta:
-		managed = False
-		db_table = 'records'
 
 
 class MetadataTypes(models.Model):
@@ -396,6 +369,55 @@ class RecordsMedia(models.Model):
 	class Meta:
 		managed = True
 		db_table = 'records_media'
+
+
+class CrowdSourceRecords(models.Model):
+	transcription_statuses = [
+		('untranscribed', 'Ej transkriberad'),
+		('transcribed', 'Transkriberad'),
+		('reviewing', 'Under granskning'),
+		('approved', 'Godkänd'),
+		('published', 'Publicerad')
+	]
+	id = models.CharField(primary_key=True, max_length=150)
+	title = models.CharField(max_length=255, verbose_name='Titel')
+	text = models.TextField(blank=True, null=True)
+	transcriptiondate = models.DateTimeField(blank=True, verbose_name="Transkriptionsdatum")
+	transcribedby = models.ForeignKey(CrowdSourceUsers, db_column='transcribedby', null=True, blank=True)
+	transcriptionstatus = models.CharField(max_length=20, blank=False, null=False, default='new', choices=transcription_statuses, verbose_name='transcription status')
+	approvedby = models.ForeignKey(User, db_column='approvedby', null=True, blank=True, editable=False, verbose_name='Godkänd av')
+	approvedate = models.DateTimeField(blank=True, verbose_name="Godkänd datum")
+	changedate = models.DateTimeField(auto_now=True, blank=True, verbose_name="Ändrad datum")
+
+	def to_be_transcribed(self):
+		if (self.text == 'Ej transkriberad.'):
+			return self.text
+		return self.transcriptionstatus
+
+	to_be_transcribed.short_description = 'Transcription status'
+
+	class Meta:
+		managed = False			# Skall ej vara kopplad till automatiska migreringar, det sker via Records!
+		db_table = 'records'
+
+
+class CrowdSourceMedia(models.Model):
+	record = models.ForeignKey(CrowdSourceRecords, db_column='record', related_name='media')
+	type = models.CharField(max_length=30, blank=True, null=True, choices=[('image', 'Bildfil'), ('pdf', 'Pdf'), ('audio', 'Ljudfil')])
+	source = models.CharField(max_length=255, blank=True, null=True)
+	title = models.TextField(blank=True, null=True)
+
+	class Meta:
+		managed = False			# Skall ej vara kopplad till automatiska migreringar, det sker via RecordsMedia!
+		db_table = 'records_media'
+
+	def image_tag(self):
+		return mark_safe('<a href="https://www4.isof.se/Folkminnen/Svenska_sagor_filer/%s" target="_blank">'
+						 '  <img src="https://www4.isof.se/Folkminnen/Svenska_sagor_filer/%s" width="200" height="150" />'
+						 '</a>' % (self.source, self.source)
+						 )
+
+	image_tag.short_description = 'Original'
 
 
 class RecordsPersons(models.Model):
