@@ -115,10 +115,20 @@ class Socken(models.Model):
 
 
 class Categories(models.Model):
+	type_choices = [
+		('folkminnen', 'Folkminnen'),
+		('sägner', 'Sägner'),
+		('frågelista', 'Frågelista'),
+		('webbfrågelista', 'Webbfrågelista'),
+		('matkarta', 'Matkarta'),
+		('digitalt-kulturarv', 'Digitalt kulturarv'),
+		('tradark', 'TradArk'),
+	]
+
 	id = models.CharField(primary_key=True, max_length=10)
 	name = models.CharField(max_length=255)
 	name_en = models.CharField(max_length=255, null=True, blank=True)
-	type = models.CharField(max_length=255, choices=[('folkminnen', 'Folkminnen'), ('sägner', 'Sägner'), ('frågelista', 'Frågelista'), ('webbfrågelista', 'Webbfrågelista'), ('matkarta', 'Matkarta'), ('digitalt-kulturarv', 'Digitalt kulturarv')])
+	type = models.CharField(max_length=255, choices=type_choices)
 	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
 	changedate = models.DateTimeField(auto_now=True, blank=True, verbose_name="Ändrad datum")
 	createdby = models.ForeignKey(User, db_column='createdby', null=True, blank=True, editable=False,
@@ -217,6 +227,22 @@ class CrowdSourceUsers(models.Model):
 		db_table = 'crowdsource_users'
 
 
+class ImportBatch(models.Model):
+	batch_id = models.AutoField(primary_key=True, null=False)
+	source_file_name = models.CharField(max_length=255, null=False)
+	records_count = models.IntegerField(blank=True, null=True)
+	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
+	changedate = models.DateTimeField(auto_now=True, blank=True, verbose_name="Ändrad datum")
+	createdby = models.ForeignKey(User, db_column='createdby', null=True, blank=True, editable=False,
+							 verbose_name="Excerperad av")
+	editedby = models.ForeignKey(User, db_column='editedby', null=True, blank=True, editable=False,
+								 related_name='Uppdaterad av+', verbose_name="Uppdaterad av")
+
+	class Meta:
+		managed = True
+		db_table = 'import_batch'
+
+
 class Records(models.Model):
 	type_choices = [
 		('arkiv', 'Arkiv'),
@@ -265,7 +291,8 @@ class Records(models.Model):
 	comment = models.TextField(blank=True)
 	country = models.CharField(max_length=20, blank=False, null=False, default='sweden', choices=country_choices)
 	language = models.CharField(max_length=20, blank=False, null=False, default='swedish', choices=language_choices)
-	import_batch = models.ForeignKey(ImportBatch, db_column="batch_id", null=True)
+	import_batch = models.ForeignKey(ImportBatch, db_column="import_batch", null=True)
+	import_row_id = models.IntegerField(default=0, blank=False, null=False)
 	transcriptiondate = models.DateTimeField(blank=True, verbose_name="Transkriptionsdatum")
 	transcribedby = models.ForeignKey(CrowdSourceUsers, db_column='transcribedby', null=True, blank=True)
 	transcriptionstatus = models.CharField(max_length=20, blank=False, null=False, default='new', choices=transcription_statuses)
@@ -498,29 +525,6 @@ class SockenV1(models.Model):
 		managed = True
 		db_table = 'socken_v1'
 
-class ImportBatch(models.Model):
-	# id = models.CharField(primary_key=True, max_length=150)
-	id = models.IntegerField(primary_key=True)
-	archive = models.CharField(max_length=255, blank=True, verbose_name='Arkiv')
-	#type = models.CharField(max_length=20, verbose_name='Materialtyp', choices=type_choices)
-	#country = models.CharField(max_length=20, blank=False, null=False, default='sweden', choices=country_choices)
-	#language = models.CharField(max_length=20, blank=False, null=False, default='swedish', choices=language_choices)
-
-	#Change
-	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
-	changedate = models.DateTimeField(auto_now=True, verbose_name="Ändringsdatum")
-	createuser = models.ForeignKey(User, null=True, blank=True, editable=False, verbose_name="Excerperad av")
-	changeuser = models.ForeignKey(User, null=True, blank=True, editable=False,
-								 related_name='Uppdaterad av+', verbose_name="Uppdaterad av")
-
-	def __str__(self):
-		name = ""
-		if self.id != None:
-			name = self.id
-		if self.archive != None:
-			name = name + ' - ' + self.archive
-		return name
-
 
 class ImportRecords(models.Model):
     # id = models.CharField(primary_key=True, max_length=150)
@@ -570,6 +574,9 @@ class ImportRecords(models.Model):
             name = name + ' - ' + self.category
         return name
 
+    class Meta:
+        managed = True
+        db_table = 'import_records'
 
 def model_m2m_changed(sender, **kwargs):
 	print(kwargs['instance'].id)
