@@ -163,7 +163,6 @@ class CategoriesKlintberg(models.Model):
 		managed = True
 		db_table = 'categories_klintberg'
 
-
 class Persons(models.Model):
 	id = models.CharField(primary_key=True, max_length=50)
 	name = models.CharField(max_length=255)
@@ -224,26 +223,17 @@ class CrowdSourceUsers(models.Model):
 	name = models.CharField(max_length=255)
 	email = models.EmailField()
 
+	def __str__(self):
+		CrowdSourceUsers = ""
+		if self.name != None:
+			CrowdSourceUsers = self.name
+		if self.email != None:
+			CrowdSourceUsers = CrowdSourceUsers + ' - ' + self.email
+		return CrowdSourceUsers
+
 	class Meta:
 		managed = True
 		db_table = 'crowdsource_users'
-
-
-class ImportBatch(models.Model):
-	batch_id = models.AutoField(primary_key=True, null=False)
-	source_file_name = models.CharField(max_length=255, null=False)
-	records_count = models.IntegerField(blank=True, null=True)
-	createdate = models.DateTimeField(auto_now_add=True, verbose_name="Skapad datum")
-	changedate = models.DateTimeField(auto_now=True, blank=True, verbose_name="Ändrad datum")
-	createdby = models.ForeignKey(User, db_column='createdby', null=True, blank=True, editable=False,
-							 verbose_name="Excerperad av")
-	editedby = models.ForeignKey(User, db_column='editedby', null=True, blank=True, editable=False,
-								 related_name='Uppdaterad av+', verbose_name="Uppdaterad av")
-
-	class Meta:
-		managed = True
-		db_table = 'import_batch'
-
 
 class Records(models.Model):
 	type_choices = [
@@ -411,6 +401,7 @@ class CrowdSourceRecords(models.Model):
 	id = models.CharField(primary_key=True, max_length=150)
 	title = models.CharField(max_length=255, verbose_name='Titel')
 	text = models.TextField(blank=True, null=True)
+	comment = models.CharField(blank=True, max_length=1000)
 	transcriptiondate = models.DateTimeField(blank=True, verbose_name="Transkriptionsdatum")
 	transcribedby = models.ForeignKey(CrowdSourceUsers, db_column='transcribedby', null=True, blank=True)
 	transcriptionstatus = models.CharField(max_length=20, blank=False, null=False, default='new', choices=transcription_statuses, verbose_name='transcription status')
@@ -465,7 +456,6 @@ class RecordsPersons(models.Model):
 		managed = True
 		db_table = 'records_persons'
 		unique_together = (('record', 'person'),)
-
 
 class RecordsPlaces(models.Model):
 	relation_type_choices = [
