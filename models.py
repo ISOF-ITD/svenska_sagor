@@ -262,6 +262,7 @@ class Records(models.Model):
 
 	transcription_statuses = [
 		('untranscribed', 'Ej transkriberad'),
+		('readytotranscribe', 'Publicerad för transkribering'),
 		('transcribed', 'Transkriberad'),
 		('reviewing', 'Under granskning'),
 		('approved', 'Godkänd'),
@@ -393,6 +394,7 @@ class RecordsMedia(models.Model):
 class CrowdSourceRecords(models.Model):
 	transcription_statuses = [
 		('untranscribed', 'Ej transkriberad'),
+		('readytotranscribe', 'Publicerad för transkribering'),
 		('transcribed', 'Transkriberad'),
 		('reviewing', 'Under granskning'),
 		('approved', 'Godkänd'),
@@ -404,6 +406,7 @@ class CrowdSourceRecords(models.Model):
 	comment = models.CharField(blank=True, max_length=1000)
 	transcriptiondate = models.DateTimeField(blank=True, verbose_name="Transkriptionsdatum")
 	transcribedby = models.ForeignKey(CrowdSourceUsers, db_column='transcribedby', null=True, blank=True)
+	#transcribedby = models.ForeignKey(CrowdSourceUsers, on_delete=models.SET_NULL(), db_column='transcribedby', null=True, blank=True)
 	transcriptionstatus = models.CharField(max_length=20, blank=False, null=False, default='new', choices=transcription_statuses, verbose_name='transcription status')
 	approvedby = models.ForeignKey(User, db_column='approvedby', null=True, blank=True, editable=False, verbose_name='Godkänd av')
 	approvedate = models.DateTimeField(blank=True, verbose_name="Godkänd datum")

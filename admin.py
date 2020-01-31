@@ -161,9 +161,11 @@ class RecordsAdmin(ExtendedModelAdminMixin, admin.ModelAdmin):
 
 
 class CrowdSourceReview(ExtendedModelAdminMixin, admin.ModelAdmin):
+	save_on_top = True
 	list_display = ['id', 'title', 'to_be_transcribed', 'transcribedby', 'transcriptiondate']
 	extra_list_display = []
-	extra_list_filter = ['transcriptionstatus']
+	list_filter = ['transcriptionstatus', 'transcribedby', 'transcriptiondate']
+	#extra_list_filter = ['transcriptionstatus']
 	extra_search_fields = []
 	list_editable = []
 	raw_id_fields = []
@@ -180,6 +182,7 @@ class CrowdSourceReview(ExtendedModelAdminMixin, admin.ModelAdmin):
 	actions = [force_update, 'remove_transcription']
 
 	fields = [('id', 'title'), 'text', 'comment', ('transcribedby', 'transcriptiondate'), ('transcriptionstatus', 'approvedby')]
+	search_fields = ['id','title']
 
 	def save_model(self, request, obj, form, change):
 		if change == True:
