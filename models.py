@@ -22,6 +22,9 @@ logger = logging.getLogger(__name__)
 
 import es_config
 
+import urllib3
+urllib3.disable_warnings()
+
 class Harad(models.Model):
 	name = models.CharField(max_length=50, blank=True, null=True)
 	lan = models.CharField(max_length=30, blank=True, null=True)
@@ -587,8 +590,9 @@ def model_m2m_changed(sender, **kwargs):
 # Spara/uppdatera modell JSON i Elasticsearch
 def records_post_saved(sender, **kwargs):
 	def save_es_model():
+		logger.debug("records_post_saved")
 		modelId = kwargs['instance'].id
-		print('records_post_saved')
+		print('print records_post_saved')
 
 		restUrl = es_config.restApiRecordUrl+str(modelId)
 		modelResponseData = requests.get(restUrl, verify=False)
