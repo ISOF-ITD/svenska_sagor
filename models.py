@@ -17,6 +17,9 @@ from threading import Timer
 
 from django.contrib.auth.models import User
 
+import logging
+logger = logging.getLogger(__name__)
+
 import es_config
 
 class Harad(models.Model):
@@ -587,18 +590,24 @@ def records_post_saved(sender, **kwargs):
 		modelId = kwargs['instance'].id
 		print('records_post_saved')
 
-		modelResponseData = requests.get(es_config.restApiRecordUrl+str(modelId), verify=False)
+		restUrl = es_config.restApiRecordUrl+str(modelId)
+		modelResponseData = requests.get(restUrl, verify=False)
 		modelResponseData.encoding = 'utf-8'
 		modelJson = modelResponseData.json()
 
 		document = {
 			'doc': modelJson
 		}
+		logger.debug("url, data %s %s", restUrl, json.dumps(document).encode('utf-8'))
 
-		esResponse = requests.post(es_config.protocol+(es_config.user+':'+es_config.password+'@' if hasattr(es_config, 'user') else '')+es_config.host+'/'+es_config.index_name+'/legend/'+str(modelId)+'/_update', data=json.dumps(document).encode('utf-8'), verify=False)
+		esUrl = es_config.protocol + (es_config.user + ':' + es_config.password + '@' if hasattr(es_config, 'user') else '') + es_config.host + '/' + es_config.index_name + '/legend/' + str(modelId) + '/_update'
+
+		esResponse = requests.post(esUrl, data=json.dumps(document).encode('utf-8'), verify=False)
+		logger.debug("url post %s ", esUrl)
 
 		if 'status' in esResponse.json() and esResponse.json()['status'] == 404:
 			esResponse = requests.put(es_config.protocol+(es_config.user+':'+es_config.password+'@' if hasattr(es_config, 'user') else '')+es_config.host+'/'+es_config.index_name+'/legend/'+str(modelId), data=json.dumps(modelJson).encode('utf-8'), verify=False)
+			logger.debug("url put %s ", esUrl)
 
 	t = Timer(5, save_es_model)
 	t.start()
