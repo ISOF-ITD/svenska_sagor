@@ -636,6 +636,7 @@ def person_post_saved(sender, **kwargs):
 
 
 post_save.connect(records_post_saved, sender=Records)
+post_save.connect(records_post_saved, sender=CrowdSourceRecords)
 m2m_changed.connect(records_post_saved, sender=Records)
 post_delete.connect(model_post_delete, sender=Records)
 
