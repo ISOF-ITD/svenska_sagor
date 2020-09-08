@@ -149,7 +149,7 @@ class Migration(migrations.Migration):
                 ('type', models.CharField(blank=True, choices=[('image', 'Bildfil'), ('pdf', 'Pdf'), ('audio', 'Ljudfil')], max_length=30, null=True)),
                 ('source', models.CharField(blank=True, max_length=255, null=True)),
                 ('title', models.TextField(blank=True, null=True)),
-                ('record', models.ForeignKey(db_column='record', on_delete=django.db.models.deletion.CASCADE, related_name='media', to='Sagenkarta-Admin.Records')),
+                ('record', models.ForeignKey(db_column='record', on_delete=django.db.models.deletion.CASCADE, related_name='media', to='Sagenkarta-Admin.Records')create),
             ],
             options={
                 'db_table': 'records_media',
