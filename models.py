@@ -288,6 +288,7 @@ class Records(models.Model):
 	archive = models.CharField(max_length=255, blank=True, verbose_name='Arkiv')
 	archive_id = models.CharField(max_length=1000, blank=True)
 	type = models.CharField(max_length=20, verbose_name='Materialtyp', choices=type_choices)
+	record_type = models.CharField(max_length=255, blank=True, null=True)
 	archive_page = models.CharField(max_length=20, blank=True, null=True)
 	total_pages = models.IntegerField(default=1, blank=False, null=False)
 	source = models.TextField(blank=True, verbose_name='Källa')
